@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="EN-US">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="keywords" content=""/>
+        <meta name="description" content=""/>
+        <meta name="author" content="jrymal"/>
+        <meta name="theme-color" content="#3367D6"/>
+
+        <title>Fret Board Master</title>
+
+        <link rel="manifest" href="manifest.json">
+
+        <link rel="icon" href="images/icons-192.png" sizes="192x192" />
+        <link rel="icon" href="images/icons-512.png" sizes="512x512" />
+
+        <script type="text/javascript" src="js/Util.js" async> </script>
+        <link rel="stylesheet" type="text/css" href="css/core.css" media="all" async/>
+
+    </head>
+    <body>
+        <noscript>
+            <h1>This site requires Javascript</h1>
+        </noscript>
+        <div id="rootNode" class="topContainer">
+            <h1>Fret Board Master</h2>
+            <p>Some text about things.</p>
+            <label for="instrument">Instrument</label>
+            <select class="tagAlong" id="instument" aria-label="Instrument choice">
+                <option value="COPPER">Copper</option>
+                <option value="SILVER">Silver</option>
+                <option value="ELECTRUM">Electrum</option>
+                <option value="GOLD">Gold</option>
+                <option value="PLATINUM">Platinum</option>
+            </select>
+            <nav class="nav nav-menu" role="navigation">
+                <ul>
+                    <li><a href="#scales">Scales</a></li>
+                    <li><a href="#chords">Chords</a></li>
+                    <li id="install-app" class="hidden"><a href="#" onClick="installApp()">Install as an App</a></li>
+                </ul>
+            </nav>
+
+            <section class="" id="scales">
+            </section>
+            
+       <!-- Root Node Closing -->
+        </div>
+        
+        <script>
+            'use strict';
+            if('serviceWorker' in navigator) {
+                navigator.serviceWorker
+                    .register('online5eCS-serviceworker.js')
+                    .then(function() { console.log("Service Worker Registered"); })
+                    .catch(function(error) {console.warn('Registration failed with ' + error);});
+            }
+        </script>
+
+    </body>
+</html>
