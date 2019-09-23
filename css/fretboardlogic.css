@@ -1,0 +1,49 @@
+:root {
+    --color-root: #00000070;
+    --color-second: #cf0000;
+    --color-third: #ff000020;
+    --color-fourth: #bbbbbb;
+    --color-fifth: #4CAF50;
+    --color-sixth: #101010;
+    --color-seventh: #000000;
+}
+
+.note{
+    border-radius: 10px;
+}
+
+.note.root{
+    background: var(--color-root);
+}
+
+.note.second{
+    background: var(--color-second);
+}
+
+.note.third{
+    background: var(--color-third);
+}
+
+.note.fourth{
+    background: var(--color-forth);
+}
+
+.note.fifth{
+    background: var(--color-fifth);
+}
+
+.note.sixth{
+    background: var(--color-sixth);
+}
+
+.note.seventh{
+    background: var(--color-seventh);
+}
+
+.scale{
+    width: 3em;
+}
+
+.chord{
+    width: 3em;
+}

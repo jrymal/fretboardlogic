@@ -1,67 +1,58 @@
 'use strict';
 
-var NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+var SCALE_DEGREES= [1,2,3,4,5,6,7];
 var INTERVALS = [ 2, 2, 1, 2, 2, 2, 1];
-
-function MusicTheory(key, modifiers){
-    this.key = key;
-    this.modifiers= modifiers;
-}
-
-MusicTheory.prototype.getScale = function(){
-    return new ScaleInfo(this.key, this.modifiers);
-}
-
-MusicTheory.prototype.getChord = function(degree){
-    return new ChordInfo(this.key, this.modifiers, degree);
-}
 
 function ScaleInfo(key, modifiers){
     this.key = key;
-    this.modifiers= modifiers;
-    this.notes;
+    this.modifiers = modifiers;
+    this.noteMap = this.generateNoteMap(this.buildDegreeList(SCALE_DEGREES, modifiers));
 }
 
-ScaleInfo.prototype.getNextFret = getNextFret;
-
-function ChordInfo(key, modifiers, degree){
-    this.key = key;
-    this.modifiers= modifiers;
-    this.notes;
+ScaleInfo.prototype.generateNoteMap= function(degreeList){
+    return {};
 }
 
-ChordInfo.prototype.getNextFret = getNextFret;
+ScaleInfo.prototype.buildDegreeList = function(degreeList, modifiers){
+    return {};
+}
 
-function getNextNote (note){
-    var curIdx;
-    for(curIdx = 0; curIdx < length(NOTES); curIdx++){
-        if (NOTES[curIdx] === note){
-            break;
-        }
+ScaleInfo.prototype.getChord = function(degree){
+    return new ChordInfo(this.noteMap, degree);
+}
+
+ScaleInfo.prototype.getNote = function(note){
+    return this.noteMap[note];
+}
+
+function ChordInfo(scaleNoteMap, degree){
+    this.degree=degree;
+    this.noteMap = this.generateNoteMap(scaleNoteMap, degree);
+}
+
+ChordInfo.prototype.getNote = function(note){
+    return this.noteMap[note];
+}
+
+ChordInfo.prototype.generateNoteMap= function(scaleNoteMap, degree){
+    return {};
+}
+
+function NoteInfo(note, degree){
+    this.note = note;
+    this.degree = degree;
+}
+
+NoteInfo.prototype.getDegreeAsString = function(){
+    switch(this.degree){
+        case 1: return "root";
+        case 2: return "second";
+        case 3: return "third";
+        case 4: return "fourth";
+        case 5: return "fifth";
+        case 6: return "sixth";
+        case 7: return "seventh";
     }
-
-    return NOTES[(curIdx+1) % length(NOTES)];
+    console.log("Unknown degree");
+    return null;
 }
-
-function getNextFret (fret, fretList, notes){
-    var array = new Array();
-
-    fretList.forEach(
-        function(noteStr){
-            var splitNoteArray = noteStr.split(":");
-            var note = splitNoteArray[0];
-            var startFret = splitNoteArray[1];
-       
-            if (!isBlank(startFret) && fret <= startFret){
-                array.push(note+":"+startFret);
-            } else {
-                array.push(getNextNote(note));
-            }
-        }
-    );
-
-    return array;
-}
-
-
-
