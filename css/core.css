@@ -1,0 +1,247 @@
+:root {
+    --color-smoke: #00000070;
+    --color-error-fgnd: #cf0000;
+    --color-error-bkgnd: #ff000020;
+    --color-inactive: #bbbbbb;
+    --color-active: #4CAF50;
+    --color-primary-text: #101010;
+    --color-primary-border: #000000;
+    --color-primary-background: #ffffff;
+    --color-alt-row-background: #eeeeee;
+    --color-wizard-background: #f1f1f1;
+    --color-wizard-border: #ccc;
+}
+
+body {
+    font-family: Helvetica Neue, Helvetica, Arial;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+form {
+    margin: 0;
+}
+
+button, 
+label, 
+input, 
+select, 
+textarea, 
+a  {
+    padding: 0 0 0.2em 0;
+    font-size: 1.0em;
+}
+
+a {
+    min-width: 48px;
+    min-height: 48px;
+}
+
+button, 
+label, 
+input, 
+select, 
+textarea {
+    color: var(--color-primary-text);
+    display: block;
+}
+
+label > input[type=radio],
+label > input[type=checkbox]{
+    display: inline;
+    margin-right: .6em;
+}
+
+input, 
+select, 
+textarea {
+    margin: 0 0.5em 0.5em 0;
+}
+
+table {
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+table td,
+th {
+    border: .1em solid;
+    border: .1em solid var(--color-primary-border);
+}
+
+thead tr,
+tbody tr:nth-child(even) {
+    background-color: var(--color-alt-row-background);
+}
+
+tbody tr:nth-child(odd) {
+    background-color: var(--color-primary-background);
+}
+
+td > input,
+td > button {
+    display: inline-block;
+}
+
+dt {
+    font-weight: 600;
+}
+
+dd {
+    margin-left: .5em;
+}
+
+dd > ul {
+    padding-left: 1.2em;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+button {
+    padding: .2em;
+    margin: .2em;
+}
+
+input:last-child {
+    padding: 0;
+    margin: 0;
+}
+
+input.short {
+    width: 3em;
+}
+
+input:invalid {
+    box-shadow: 0 0 .3em .1em var(--color-error-bkgnd);
+    background: var(--color-error-bkgnd);
+}
+
+input:focus:invalid {
+    outline: default;
+}
+
+li, dd {
+    word-break: break-word;
+
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -epub-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+
+label.required::after{
+    content: " *";
+    color: var(--color-error-fgnd);
+}
+
+ul.buttonbar,
+.nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.buttonbar li,
+.nav li {
+  float: left;
+}
+
+.nav li {
+  border-left: 2px solid var(--color-primary-text);
+}
+
+.buttonbar li a,
+.nav li a {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  padding: .5rem 1rem;
+  min-width: 16px;
+  min-height: 32px;
+}
+
+.buttonbar li:first-child,
+.nav li:first-child{
+  border: 0;
+}
+
+/*** MEDIA ***/
+@media screen and (max-width:34.2em) {
+    .topContainer .stack.fullWidth.subdivided {
+        -webkit-column-count: 2;
+        -moz-column-count: 2;
+        -ms-column-count: 2;
+        column-count: 2;
+    }
+}
+
+@media screen and (min-width:50em) and (max-width:65em) {
+    /* Table is starting to take up some space */
+    .topContainer .stack.fullWidth.subdivided{
+        -webkit-column-count: 4;
+        -moz-column-count: 4;
+        -ms-column-count: 4;
+        column-count: 4;
+    }
+}
+ @media screen and (min-width:65em) {
+    /* Table is REALLY starting to waste space */
+    .topContainer .stack.fullWidth.subdivided{
+        -webkit-column-count: 5;
+        -moz-column-count: 5;
+        -ms-column-count: 5;
+        column-count: 5;
+    }
+} 
+
+.reveal-if-checked {
+    display: none;
+}
+
+input[type="radio"]:checked ~ .reveal-if-checked,
+input[type="checkbox"]:checked ~ .reveal-if-checked{
+    display: block;
+}
+
+
+/*** UTILITIES ***/
+.hidden{
+    display: none !important;
+}
+
+.marginless {
+    margin: 0;
+}
+
+.tagAlong{
+    display: inline-block;
+    margin-right: 1em;
+}
+
+.toThaLeft {
+    float: left;
+    width: 50%;
+}
+
+.column-2{
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    -ms-column-count: 2;
+    column-count: 2;
+} 
+
+.scrollable{
+    overflow: scroll;
+}
+
+.noScroll {
+    overflow: hidden;
+}
+
+.height100{
+    height: 100%;
+}

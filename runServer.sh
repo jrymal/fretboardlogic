@@ -5,7 +5,7 @@ PORT_FILE=python-server.PORT
 LOG_FILE=python-server.log
 ERR_FILE=python-server.err
 
-DEFAULT_PORT=8080
+DEFAULT_PORT=8081
 
 function start {
     if ! isRunning ; then

@@ -15,44 +15,90 @@
         <link rel="icon" href="images/icons-192.png" sizes="192x192" />
         <link rel="icon" href="images/icons-512.png" sizes="512x512" />
 
-        <script type="text/javascript" src="js/Util.js" async> </script>
+        <script type="text/javascript" src="js/Util.js"> </script>
+        <script type="text/javascript" src="js/FretBoardLogic.js" async> </script>
+        <script type="text/javascript" src="js/FretBoardGenerator.js" async> </script>
+        <script type="text/javascript" src="js/MusicTheory.js" async> </script>
         <link rel="stylesheet" type="text/css" href="css/core.css" media="all" async/>
 
     </head>
-    <body>
+    <body onload="init()">
         <noscript>
             <h1>This site requires Javascript</h1>
         </noscript>
+
         <div id="rootNode" class="topContainer">
-            <h1>Fret Board Master</h2>
+            <h1>Fret Board Logic</h2>
             <p>Some text about things.</p>
+
             <label for="instrument">Instrument</label>
-            <select class="tagAlong" id="instument" aria-label="Instrument choice">
-                <option value="E A D G B E">Guitar - 6 String</option>
-                <option value="B E A D G B E">Guitar - 7 String</option>
-                <option value="G D G B D">Banjo - 5 String</option>
-                <option value="G D A E">Mandolin</option>
-                <option value="custom">Custom</option>
+            <select class="tagAlong" id="instrument" aria-label="Instrument choice" >
+                <option value="banjo5">Banjo - 5 String</option>
+                <option value="guitar" selected>Guitar - 6 String</option>
+                <option value="guitar7">Guitar - 7 String</option>
+                <option value="mandolin">Mandolin</option>
             </select>
+ 
+            <label for="key">Key</label>
+            <select class="tagAlong" id="key" aria-label="Key choice">
+                <option value="C">C</option>
+                <option value="C#">C#/Db</option>
+                <option value="D">D</option>
+                <option value="D#">D#/Eb</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
+                <option value="F#">F#/Gb</option>
+                <option value="G">G</option>
+                <option value="G#">G#/Ab</option>
+                <option value="A">A</option>
+                <option value="A#">A#/Bb</option>
+                <option value="B">B</option>
+            </select>
+            <select class="tagAlong" id="modifier" aria-label="Modifier choice">
+                <option value="[]">Major</option>
+                <option value="[3b]">Minor</option>
+            </select>
+
+
             <nav class="nav nav-menu" role="navigation">
                 <ul>
                     <li><a href="#scales">Scales</a></li>
                     <li><a href="#chords">Chords</a></li>
+                    <li><a href="#nameit">Name It</a></li>
                     <li id="install-app" class="hidden"><a href="#" onClick="installApp()">Install as an App</a></li>
                 </ul>
             </nav>
 
-            <section class="" id="scales">
+            <section class="scales" id="scales">
+                <table class="scale" id="scale-table">
+                </table>
             </section>
-            
+
+            <section class="chords" id="chords">
+                <table class="chord root" id="chord-root-table">
+                </table>
+                <table class="chord second" id="chord-second-table">
+                </table>
+                <table class="chord third" id="chord-third-table">
+                </table>
+                <table class="chord forth" id="chord-forth-table">
+                </table>
+                <table class="chord fifth" id="chord-fifth-table">
+                </table>
+                <table class="chord sixth" id="chord-sixth-table">
+                </table>
+                <table class="chord seventh" id="chord-seventh-table">
+                </table>
+            </section>
+
        <!-- Root Node Closing -->
         </div>
-        
+
         <script>
             'use strict';
             if('serviceWorker' in navigator) {
                 navigator.serviceWorker
-                    .register('online5eCS-serviceworker.js')
+                    .register('fretboard-serviceworker.js')
                     .then(function() { console.log("Service Worker Registered"); })
                     .catch(function(error) {console.warn('Registration failed with ' + error);});
             }
