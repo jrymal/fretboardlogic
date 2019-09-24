@@ -49,7 +49,7 @@ function ChordInfo(scaleNoteMap, scaleList, degree){
     this.scale = scaleList;
     this.note = scaleList[degree-1];
 
-    this.name = this.note +" "+this.getModifier() +" Chord";
+    this.name = this.note +" "+this.getModifier() +"("+this.getDegreeAsRN()+") Chord";
 }
 
 ChordInfo.prototype.getNote = function(note){
@@ -66,10 +66,12 @@ ChordInfo.prototype.generateNoteMap= function(scaleNoteMap, degree){
 
     var note = scale[degree-1];
     
+    var totalDistance = 0;
     for(var degree = 0; degree <= length(CHORD_INTERVAL); degree++){
-        o[note] = new NoteInfo(note, degree+1);
+        o[note] = new NoteInfo(note, totalDistance+1);
         var distance = CHORD_INTERVAL[degree];
         note = getNextNote(scale, note, distance);
+        totalDistance+=distance;
     }
 
     return o;
@@ -85,6 +87,19 @@ ChordInfo.prototype.getModifier = function(){
         case 6:
             return "Minor";
         case 7: return "Augmented";
+    }
+    console.log("Unknown degree");
+    return null;
+}
+ChordInfo.prototype.getDegreeAsRN = function(){
+    switch(this.degree){
+        case 1: return "I";
+        case 2: return "ii";
+        case 3: return "iii";
+        case 4: return "IV";
+        case 5: return "V";
+        case 6: return "vi";
+        case 7: return "vii";
     }
     console.log("Unknown degree");
     return null;
