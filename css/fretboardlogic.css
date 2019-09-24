@@ -1,11 +1,11 @@
 :root {
-    --color-root: #00000070;
-    --color-second: #cf0000;
-    --color-third: #ff000020;
-    --color-fourth: #bbbbbb;
-    --color-fifth: #4CAF50;
-    --color-sixth: #101010;
-    --color-seventh: #000000;
+    --color-root: #003000;
+    --color-second: #006000;
+    --color-third: #009000;
+    --color-fourth: #00c000;
+    --color-fifth: #000030;
+    --color-sixth: #000060;
+    --color-seventh: #000090;
 }
 
 .note{
@@ -25,7 +25,7 @@
 }
 
 .note.fourth{
-    background: var(--color-forth);
+    background: var(--color-fourth);
 }
 
 .note.fifth{

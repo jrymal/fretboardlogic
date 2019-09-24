@@ -1,6 +1,5 @@
 'use strict';
 
-var NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 var SHOWN_FRETS=15;
 
 function FretBoardGenerator(stringList, key, modifiers){
@@ -33,6 +32,8 @@ FretBoard.prototype.createFrets= function(eleTable, scaleInfo){
     var eleTHead = document.createElement("thead");
     var eleTBody= document.createElement("tbody");
 
+    eleCaption.innerHTML = scaleInfo.name;
+
     var currentFret = clone(this.stringList);
     for (var fret = 0; fret < SHOWN_FRETS; fret++){
         var row = eleTBody.insertRow(fret);
@@ -60,26 +61,16 @@ FretBoard.prototype.configureCellForNote =function(cell, scaleInfo, note){
     var ni = scaleInfo.getNote(note);
 
     if (ni){
-        addClass(cell, "note");
-        addClass(cell, ni.getDegreeAsString());
+        cell.classList.add("note");
+        cell.classList.add(ni.getDegreeAsString());
     
     }
     
     cell.innerHTML = note;
 
 }
-function getNextNote(note){
-    var curIdx;
-    for(curIdx = 0; curIdx < length(NOTES); curIdx++){
-        if (NOTES[curIdx] === note){
-            break;
-        }
-    }
 
-    return NOTES[(curIdx+1) % length(NOTES)];
-}
-
-FretBoard.prototype.getNextFret=function  (fret, fretList, notes){
+FretBoard.prototype.getNextFret=function  (fret, fretList){
     var array = new Array();
 
     fretList.forEach(
@@ -95,7 +86,7 @@ FretBoard.prototype.getNextFret=function  (fret, fretList, notes){
                     array.push(note);
                 }
             } else {
-                array.push(getNextNote(note));
+                array.push(getNextNote(NOTES, note, 1));
             }
         }
     );
