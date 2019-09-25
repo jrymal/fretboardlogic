@@ -2,6 +2,8 @@
 
 var INSTRUMENTS = {
     "banjo5":["G:5", "D", "G", "B", "D"],
+    "bass4":["E", "A", "D", "G"],
+    "bass5":["B", "E", "A", "D", "G"],
     "guitar":["E", "A", "D", "G", "B", "E"],
     "guitar7":["B", "E", "A", "D", "G", "B", "E"],
     "mandolin":["G", "D", "A", "E"],
@@ -18,14 +20,27 @@ var SCALES = {
         "mods":[],
         "intervals":STD_SCALE_INTERVAL
     },
-    "min":{
+    "nmin":{
         "notes":[1, 2, 3, 4, 5, 6, 7],
         "mods":["3b"],
-        "intervals":[ 2, 1, 2, 2, 2, 2, 1]
+        "intervals":[ 2, 1, 2, 2, 1, 2, 2]
+    },
+    "hmin":{
+        "notes":[1, 2, 3, 4, 5, 6, 7],
+        "mods":["3b"],
+        "intervals":[ 2, 1, 2, 2, 1, 3, 1]
     },
     "pent":{
         "notes":[1, 3, 5, 7],
         "intervals":STD_SCALE_INTERVAL
+    },
+    "whole":{
+        "notes":[1, 2, 3, 4, 5, 6],
+        "intervals":[2, 2, 2, 2, 2, 2]
+    },
+    "blues":{
+        "notes":[1, 2, 3, 4, 5, 6],
+        "intervals":[3, 2, 1, 1, 3, 2]
     },
 
 };
