@@ -9,13 +9,17 @@ function FretBoardGenerator(stringList, key, modifiers){
 
 // Takes in a table to update to look appropriate for the theory of the scale
 FretBoardGenerator.prototype.createScale = function(element){
-    this.fretboard.createFrets(element, this.scaleinfo);
+    this.fretboard.createHorizontalFrets(element, this.scaleinfo);
     return this;
 }
 
 // Takes in a table to update to look appropriate for the theory of the chord (identified by the degree on the scale)
 FretBoardGenerator.prototype.createChord = function(element, degree){
-    this.fretboard.createFrets(element, this.scaleinfo.getChord(degree));
+    var chordInfo = this.scaleinfo.getChord(degree);
+    if ( chordInfo ){
+        this.fretboard.createVerticalFrets(element, chordInfo);
+    }
+    show(element, exists(chordInfo));
     return this;
 }
 
@@ -23,8 +27,35 @@ function FretBoard(stringList){
     this.stringList = stringList;
 }
 
-// Takes in a table to update to look appropriate for the theory of the scale
-FretBoard.prototype.createFrets= function(eleTable, scaleInfo){
+FretBoard.prototype.createHorizontalFrets= function(eleTable, scaleInfo){
+    
+    removeAllChildren(eleTable);
+
+    var eleCaption = document.createElement("caption");
+    var eleTHead = document.createElement("thead");
+    var eleTBody= document.createElement("tbody");
+
+    eleCaption.innerHTML = scaleInfo.name;
+
+    for (var stringIdx = length(this.stringList)-1 ; stringIdx >=0 ; stringIdx--){
+        // To leverage the existing functions, we use a list of 1 for all computations
+        var currentNote = new Array(this.stringList[stringIdx]);
+
+        var row = eleTBody.insertRow(length(this.stringList) - 1 - stringIdx);
+    
+        for (var fret = 0; fret < SHOWN_FRETS; fret++){
+            this.configureCellForNote( row.insertCell(fret), scaleInfo, currentNote[0], true);
+            currentNote = this.getNextFret(fret+1, currentNote);
+        }
+    }
+
+
+    eleTable.appendChild(eleCaption);
+    eleTable.appendChild(eleTHead);
+    eleTable.appendChild(eleTBody);
+}
+
+FretBoard.prototype.createVerticalFrets= function(eleTable, scaleInfo){
     
     removeAllChildren(eleTable);
 
@@ -53,21 +84,26 @@ FretBoard.prototype.createFrets= function(eleTable, scaleInfo){
     eleTable.appendChild(eleTBody);
 }
 
-FretBoard.prototype.configureCellForNote =function(cell, scaleInfo, note){
+FretBoard.prototype.configureCellForNote =function(cell, scaleInfo, note, isHorizontal = false){
     if (note.includes(":")){
         return;
     }
 
     var ni = scaleInfo.getNote(note);
 
+    var eleNote = document.createElement("p");
+    eleNote.classList.add("note");
+    if (isHorizontal){
+        eleNote.classList.add("hnote");
+    }
     if (ni){
-        cell.classList.add("note");
-        cell.classList.add(ni.getDegreeAsString());
-    
+        eleNote.classList.add(ni.getDegreeAsString());
     }
     
-    cell.innerHTML = note;
-
+    eleNote.innerHTML=note;
+    
+    cell.appendChild(eleNote);
+    cell.classList.add("note-cell");
 }
 
 FretBoard.prototype.getNextFret=function  (fret, fretList){

@@ -4,7 +4,30 @@ var INSTRUMENTS = {
     "banjo5":["G:5", "D", "G", "B", "D"],
     "guitar":["E", "A", "D", "G", "B", "E"],
     "guitar7":["B", "E", "A", "D", "G", "B", "E"],
-    "mandolin":["G", "D", "A", "E"]
+    "mandolin":["G", "D", "A", "E"],
+};
+
+var SCALES = {
+    /*
+     * notes - list of degrees in scale; acts as a filter for the degrees in the scale
+     * mods - list of modifications to the sccale; display only
+     * intervals - the intervals for each note in sequence in the scale
+     */
+    "maj":{
+        "notes":[1, 2, 3, 4, 5, 6, 7],
+        "mods":[],
+        "intervals":STD_SCALE_INTERVAL
+    },
+    "min":{
+        "notes":[1, 2, 3, 4, 5, 6, 7],
+        "mods":["3b"],
+        "intervals":[ 2, 1, 2, 2, 2, 2, 1]
+    },
+    "pent":{
+        "notes":[1, 3, 5, 7],
+        "intervals":STD_SCALE_INTERVAL
+    },
+
 };
 
 function init(){
@@ -15,13 +38,14 @@ function init(){
 function addListeners(){
     $("instrument").addEventListener("change", updateAll);
     $("key").addEventListener("change", updateAll);
+    $("modifier").addEventListener("change", updateAll);
 }
 
 function updateAll(){
 
     var stringList = INSTRUMENTS[getSelectedValue($("instrument"))];
+    var mod = SCALES[getSelectedValue($("modifier"))];
     var key = getSelectedValue($("key"));
-    var mod = getSelectedValue($("modifier"));
 
     new FretBoardGenerator(stringList, key, mod)
     .createScale($("scale-table"))

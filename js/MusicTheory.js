@@ -1,7 +1,7 @@
 'use strict';
 
 var NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-var SCALE_INTERVAL = [ 2, 2, 1, 2, 2, 2, 1];
+var STD_SCALE_INTERVAL = [ 2, 2, 1, 2, 2, 2, 1];
 var CHORD_INTERVAL = [ 2, 2];
 
 function getNextNote(noteList, note, dist = 1){
@@ -24,9 +24,9 @@ ScaleInfo.prototype.generateNoteMap= function(modifiers){
     var o = new Object();
 
     var note = this.key;
-    for(var degree = 0; degree< length(SCALE_INTERVAL); degree++){
+    for(var degree = 0; degree< length(modifiers.intervals); degree++){
         o[note] = new NoteInfo(note, degree+1);
-        var distance = SCALE_INTERVAL[degree];
+        var distance = modifiers.intervals[degree];
         note = getNextNote(NOTES, note, distance);
     }
 
@@ -34,11 +34,19 @@ ScaleInfo.prototype.generateNoteMap= function(modifiers){
 }
 
 ScaleInfo.prototype.getChord = function(degree){
-    return new ChordInfo(this.noteMap, this.scale, degree);
+    if (this.modifiers.notes.indexOf(degree) >= 0){
+        return new ChordInfo(this.noteMap, this.scale, degree);
+    }
+    return null;
 }
 
 ScaleInfo.prototype.getNote = function(note){
-    return this.noteMap[note];
+    var noteInfo = this.noteMap[note];
+
+    if (noteInfo && this.modifiers.notes.indexOf(noteInfo.degree) >= 0){
+        return noteInfo;
+    }
+    return null;
 }
 
 /*-ChordInfo------------------------------------------------*/

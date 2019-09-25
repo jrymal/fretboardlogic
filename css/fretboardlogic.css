@@ -8,8 +8,21 @@
     --color-seventh: #f070f0;
 }
 
+.note-cell{
+    height: 1.2em;
+    width: 2em;
+}
+
+.hnote{
+    height: 1.2em;
+}
+
 .note{
     border-radius: 1em;
+    height: 1.2em;
+    width: 2em;
+    line-height: normal;
+    margin: 0;
 }
 
 .note.root{
