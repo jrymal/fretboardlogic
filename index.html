@@ -29,67 +29,98 @@
         </noscript>
 
         <div id="rootNode" class="topContainer">
-            <h1>Fret Board Logic</h2>
-            <p>Some text about things.</p>
-
-            <label for="instrument">Instrument</label>
-            <select class="tagAlong" id="instrument" aria-label="Instrument choice" >
-                <option value="banjo5">Banjo - 5 String</option>
-                <option value="guitar" selected>Guitar - 6 String</option>
-                <option value="guitar7">Guitar - 7 String</option>
-                <option value="mandolin">Mandolin</option>
-            </select>
- 
-            <label for="key">Key</label>
-            <select class="tagAlong" id="key" aria-label="Key choice">
-                <option value="C">C</option>
-                <option value="C#">C#/Db</option>
-                <option value="D">D</option>
-                <option value="D#">D#/Eb</option>
-                <option value="E">E</option>
-                <option value="F">F</option>
-                <option value="F#">F#/Gb</option>
-                <option value="G">G</option>
-                <option value="G#">G#/Ab</option>
-                <option value="A">A</option>
-                <option value="A#">A#/Bb</option>
-                <option value="B">B</option>
-            </select>
-            <select class="tagAlong" id="modifier" aria-label="Modifier choice">
-                <option value="[]">Major</option>
-                <option value="[3b]">Minor</option>
-            </select>
-
+            <section class="header">
+                <h1>Fret Board Logic</h1>
+                <details>
+                    <summary>Music Theory is Hard</summary>
+                    <p>Details on why music theory is hard......suggstions are welcome</p>
+                </details>
+            </section>
+            <section class="controls">
+                <div class="control">
+                    <label for="instrument">Instrument</label>
+                    <select class="tagAlong" id="instrument" aria-label="Instrument choice" >
+                        <option value="banjo5">Banjo - 5 String</option>
+                        <option value="guitar" selected>Guitar - 6 String</option>
+                        <option value="guitar7">Guitar - 7 String</option>
+                        <option value="mandolin">Mandolin</option>
+                    </select>
+                </div>
+     
+                <div class="control">
+                    <label for="key">Key</label>
+                    <div>
+                    <select class="tagAlong" id="key" aria-label="Key choice">
+                        <option value="C">C</option>
+                        <option value="C#">C#/Db</option>
+                        <option value="D">D</option>
+                        <option value="D#">D#/Eb</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="F#">F#/Gb</option>
+                        <option value="G">G</option>
+                        <option value="G#">G#/Ab</option>
+                        <option value="A">A</option>
+                        <option value="A#">A#/Bb</option>
+                        <option value="B">B</option>
+                    </select>
+                    <select class="tagAlong" id="modifier" aria-label="Modifier choice">
+                        <option value="[]">Major</option>
+                        <option value="[3b]">Minor</option>
+                    </select>
+                    </div>
+                </div>
+            </section>
 
             <nav class="nav nav-menu" role="navigation">
                 <ul>
                     <li><a href="#scales">Scales</a></li>
                     <li><a href="#chords">Chords</a></li>
-                    <li><a href="#nameit">Name It</a></li>
+                    <!--li><a href="#nameit">Name It</a></li-->
                     <li id="install-app" class="hidden"><a href="#" onClick="installApp()">Install as an App</a></li>
                 </ul>
             </nav>
 
-            <section class="scales" id="scales">
+            <section class="scales" >
+                <hr>
+                <h2 id="scales">Scale</h2>
                 <table class="scale" id="scale-table">
                 </table>
             </section>
 
-            <section class="chords" id="chords">
-                <table class="chord root" id="chord-root-table">
-                </table>
-                <table class="chord second" id="chord-second-table">
-                </table>
-                <table class="chord third" id="chord-third-table">
-                </table>
-                <table class="chord forth" id="chord-forth-table">
-                </table>
-                <table class="chord fifth" id="chord-fifth-table">
-                </table>
-                <table class="chord sixth" id="chord-sixth-table">
-                </table>
-                <table class="chord seventh" id="chord-seventh-table">
-                </table>
+            <section class="chords">
+                <hr>
+                <h2 id="chords">Chords</h2>
+                <div class="chords-container">
+                    <div class="chord-container">
+                    <table class="chord root" id="chord-root-table">
+                    </table>
+                    </div>
+                    <div class="chord-container">
+                    <table class="chord second" id="chord-second-table">
+                    </table>
+                    </div>
+                    <div class="chord-container">
+                    <table class="chord third" id="chord-third-table">
+                    </table>
+                    </div>
+                    <div class="chord-container">
+                    <table class="chord forth" id="chord-forth-table">
+                    </table>
+                    </div>
+                    <div class="chord-container">
+                    <table class="chord fifth" id="chord-fifth-table">
+                    </table>
+                    </div>
+                    <div class="chord-container">
+                    <table class="chord sixth" id="chord-sixth-table">
+                    </table>
+                    </div>
+                    <div class="chord-container">
+                    <table class="chord seventh" id="chord-seventh-table">
+                    </table>
+                    </div>
+                </div>
             </section>
 
        <!-- Root Node Closing -->

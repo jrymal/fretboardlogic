@@ -1,15 +1,15 @@
 :root {
-    --color-root: #003000;
-    --color-second: #006000;
-    --color-third: #009000;
+    --color-root: #00f000;
+    --color-second: #a0d0a0;
+    --color-third: #d0a0d0;
     --color-fourth: #00c000;
-    --color-fifth: #000030;
-    --color-sixth: #000060;
-    --color-seventh: #000090;
+    --color-fifth: #60a060;
+    --color-sixth: #f090f0;
+    --color-seventh: #f070f0;
 }
 
 .note{
-    border-radius: 10px;
+    border-radius: 1em;
 }
 
 .note.root{
@@ -40,10 +40,41 @@
     background: var(--color-seventh);
 }
 
+body {
+    margin: 1.5em;
+}
+
+section{
+    margin: 1em 0;
+}
+
 .scale{
     width: 3em;
 }
 
+.controls{
+    display: flex;
+    flex-wrap: wrap;
+}
+.control{
+    margin-right: 3em;
+}
+
+.chord-container{
+    flex: 1;
+    margin-bottom: 1em;
+}
+.chords-container{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+.chord-container{
+    flex: 1;
+}
+
+
 .chord{
     width: 3em;
+    margin-right: 1em;
 }
