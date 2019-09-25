@@ -136,7 +136,7 @@
             'use strict';
             if('serviceWorker' in navigator) {
                 navigator.serviceWorker
-                    .register('fretboard-serviceworker.js')
+                    .register('fretboardlogic-serviceworker.js')
                     .then(function() { console.log("Service Worker Registered"); })
                     .catch(function(error) {console.warn('Registration failed with ' + error);});
             }

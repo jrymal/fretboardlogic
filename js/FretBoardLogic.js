@@ -45,9 +45,37 @@ var SCALES = {
 
 };
 
+let installPromptEvent;
 function init(){
+    window.addEventListener('beforeinstallprompt', (event) => {
+        // Prevent Chrome <= 67 from automatically showing the prompt
+        event.preventDefault();
+        // Stash the event so it can be triggered later.
+        installPromptEvent = event;
+
+        show($('install-app'), true);
+    });
+
     addListeners();
     updateAll();
+}
+
+function installApp() {
+
+    show($('install-app'), false);
+  
+    // Show the modal add to home screen dialog
+    installPromptEvent.prompt();
+    // Wait for the user to respond to the prompt
+    installPromptEvent.userChoice.then((choice) => {
+        if (choice.outcome === 'accepted') {
+          console.debug('User accepted the A2HS prompt');
+        } else {
+          console.debug('User dismissed the A2HS prompt');
+        }
+        // Clear the saved prompt since it can't be used again
+        installPromptEvent = null;
+    });
 }
 
 function addListeners(){
