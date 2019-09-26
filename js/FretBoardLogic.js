@@ -16,18 +16,18 @@ var SCALES = {
      * intervals - the intervals for each note in sequence in the scale
      */
     "maj":{
-        "notes":[1, 2, 3, 4, 5, 6, 7],
         "mods":[],
+        "notes":STD_SCALE_DEGREES,
         "intervals":STD_SCALE_INTERVAL
     },
     "nmin":{
-        "notes":[1, 2, 3, 4, 5, 6, 7],
+        "notes":STD_SCALE_DEGREES,
         "mods":["3b"],
         "intervals":[ 2, 1, 2, 2, 1, 2, 2]
     },
     "hmin":{
-        "notes":[1, 2, 3, 4, 5, 6, 7],
-        "mods":["3b"],
+        "notes":STD_SCALE_DEGREES,
+        "mods":["3:b",],
         "intervals":[ 2, 1, 2, 2, 1, 3, 1]
     },
     "pent":{
@@ -41,6 +41,34 @@ var SCALES = {
     "blues":{
         "notes":[1, 2, 3, 4, 5, 6],
         "intervals":[3, 2, 1, 1, 3, 2]
+    },
+    "ionian":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":STD_SCALE_INTERVAL
+    },
+    "dorian":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":safeRotateLeft(STD_SCALE_INTERVAL, 1)
+    },
+    "phyrigian":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":safeRotateLeft(STD_SCALE_INTERVAL, 2)
+    },
+    "lydian":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":safeRotateLeft(STD_SCALE_INTERVAL, 3)
+    },
+    "mixolydian":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":safeRotateLeft(STD_SCALE_INTERVAL, 4)
+    },
+    "aeolian":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":safeRotateLeft(STD_SCALE_INTERVAL, 5)
+    },
+    "locrian":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":safeRotateLeft(STD_SCALE_INTERVAL, 6)
     },
 
 };

@@ -2,6 +2,7 @@
 
 var NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 var STD_SCALE_INTERVAL = [ 2, 2, 1, 2, 2, 2, 1];
+var STD_SCALE_DEGREES = [ 1, 2, 3, 4, 5, 6, 7];
 var CHORD_INTERVAL = [ 2, 2];
 
 function getNextNote(noteList, note, dist = 1){
@@ -49,6 +50,9 @@ ScaleInfo.prototype.getNote = function(note){
     return null;
 }
 
+ScaleInfo.prototype.getRootNoteInfo = function(){
+    return this.getNote(this.key);
+}
 /*-ChordInfo------------------------------------------------*/
 function ChordInfo(scaleNoteMap, scaleList, degree){
     this.degree=degree;
@@ -85,41 +89,37 @@ ChordInfo.prototype.generateNoteMap= function(scaleNoteMap, degree){
     return o;
 }
 ChordInfo.prototype.getModifier = function(){
-    switch(this.degree){
-        case 1: 
-        case 4: 
-        case 5: 
-            return "Major";
-        case 2:
-        case 3:
-        case 6:
-            return "Minor";
-        case 7: return "Augmented";
-    }
-    console.log("Unknown degree");
-    return null;
+    // this is a little more complicated....
+    return "";
 }
+
 ChordInfo.prototype.getDegreeAsRN = function(){
     switch(this.degree){
         case 1: return "I";
-        case 2: return "ii";
-        case 3: return "iii";
+        case 2: return "II";
+        case 3: return "III";
         case 4: return "IV";
         case 5: return "V";
-        case 6: return "vi";
-        case 7: return "vii";
+        case 6: return "VI";
+        case 7: return "VII";
     }
     console.log("Unknown degree");
     return null;
 }
+
+ChordInfo.prototype.getDegreeAsString = function(){
+    return NoteInfo.prototype.getDegreeAsString(this.degree);;
+}
+
 /*-NoteInfo------------------------------------------------*/
 function NoteInfo(note, degree){
     this.note = note;
     this.degree = degree;
 }
 
-NoteInfo.prototype.getDegreeAsString = function(){
-    switch(this.degree){
+NoteInfo.prototype.getDegreeAsString = function(inDegree){
+    var degree = isBlank(inDegree) ? this.degree : inDegree;
+    switch(degree){
         case 1: return "root";
         case 2: return "second";
         case 3: return "third";

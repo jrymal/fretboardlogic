@@ -64,6 +64,7 @@ FretBoard.prototype.createVerticalFrets= function(eleTable, scaleInfo){
     var eleTBody= document.createElement("tbody");
 
     eleCaption.innerHTML = scaleInfo.name;
+    eleCaption.classList.add(scaleInfo.getDegreeAsString());
 
     var currentFret = clone(this.stringList);
     for (var fret = 0; fret < SHOWN_FRETS; fret++){

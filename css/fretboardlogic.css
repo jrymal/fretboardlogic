@@ -25,31 +25,31 @@
     margin: 0;
 }
 
-.note.root{
+.root{
     background: var(--color-root);
 }
 
-.note.second{
+.second{
     background: var(--color-second);
 }
 
-.note.third{
+.third{
     background: var(--color-third);
 }
 
-.note.fourth{
+.fourth{
     background: var(--color-fourth);
 }
 
-.note.fifth{
+.fifth{
     background: var(--color-fifth);
 }
 
-.note.sixth{
+.sixth{
     background: var(--color-sixth);
 }
 
-.note.seventh{
+.seventh{
     background: var(--color-seventh);
 }
 

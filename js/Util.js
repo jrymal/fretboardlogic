@@ -71,3 +71,10 @@ function removeAllChildren(element){
         element.removeChild(element.firstChild);
     }
 }
+
+function safeRotateLeft(inList, firstNodeIdx){
+    var list = clone(inList);
+    firstNodeIdx-= list.length * Math.floor(firstNodeIdx / list.length);
+    list.push.apply(list, list.splice(0, firstNodeIdx));
+    return list;
+}
