@@ -71,15 +71,6 @@ th {
     border: .1em solid var(--color-primary-border);
 }
 
-thead tr,
-tbody tr:nth-child(even) {
-    background-color: var(--color-alt-row-background);
-}
-
-tbody tr:nth-child(odd) {
-    background-color: var(--color-primary-background);
-}
-
 td > input,
 td > button {
     display: inline-block;

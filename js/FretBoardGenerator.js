@@ -68,7 +68,8 @@ FretBoard.prototype.createVerticalFrets= function(eleTable, scaleInfo){
 
     var currentFret = clone(this.stringList);
     for (var fret = 0; fret < SHOWN_FRETS; fret++){
-        var row = eleTBody.insertRow(fret);
+        var ele = fret == 0 ? eleTHead : eleTBody;
+        var row = ele.insertRow(ele.childElementCount);
     
         for (var stringIdx = 0; stringIdx < length(currentFret); stringIdx++){
             this.configureCellForNote( row.insertCell(stringIdx), scaleInfo, currentFret[stringIdx]);
@@ -98,6 +99,7 @@ FretBoard.prototype.configureCellForNote =function(cell, scaleInfo, note, isHori
         eleNote.classList.add("hnote");
     }
     if (ni){
+        eleNote.classList.add("highlighted-note");
         eleNote.classList.add(ni.getDegreeAsString());
     }
     
