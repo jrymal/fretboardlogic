@@ -68,18 +68,23 @@ section{
 caption{
     border-radius: .5em .5em 0 0;
     border: 1px solid black;
+    border-bottom: 0;
 }
 
 thead{
     border-bottom: 3px solid black;
 }
 
-tbody tr:nth-child(3),
-tbody tr:nth-child(5),
-tbody tr:nth-child(7),
-tbody tr:nth-child(9),
-tbody tr:nth-child(12),
-tbody tr:nth-child(15){
+.scale .fret0 {
+    border-right: 3px solid black;
+}
+
+.fret3,
+.fret5,
+.fret7,
+.fret9,
+.freti12,
+.fret15{
     background-color: var(--color-alt-row-background);
 }
 

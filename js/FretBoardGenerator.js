@@ -32,7 +32,6 @@ FretBoard.prototype.createHorizontalFrets= function(eleTable, scaleInfo){
     removeAllChildren(eleTable);
 
     var eleCaption = document.createElement("caption");
-    var eleTHead = document.createElement("thead");
     var eleTBody= document.createElement("tbody");
 
     eleCaption.innerHTML = scaleInfo.name;
@@ -43,15 +42,14 @@ FretBoard.prototype.createHorizontalFrets= function(eleTable, scaleInfo){
 
         var row = eleTBody.insertRow(length(this.stringList) - 1 - stringIdx);
     
-        for (var fret = 0; fret < SHOWN_FRETS; fret++){
-            this.configureCellForNote( row.insertCell(fret), scaleInfo, currentNote[0], true);
+        for (var fret = 0; fret <= SHOWN_FRETS; fret++){
+            this.configureCellForNote( row.insertCell(fret), scaleInfo, fret, currentNote[0], true);
             currentNote = this.getNextFret(fret+1, currentNote);
         }
     }
 
 
     eleTable.appendChild(eleCaption);
-    eleTable.appendChild(eleTHead);
     eleTable.appendChild(eleTBody);
 }
 
@@ -67,15 +65,15 @@ FretBoard.prototype.createVerticalFrets= function(eleTable, scaleInfo){
     eleCaption.classList.add(scaleInfo.getDegreeAsString());
 
     var currentFret = clone(this.stringList);
-    for (var fret = 0; fret < SHOWN_FRETS; fret++){
+    for (var fret = 0; fret <= SHOWN_FRETS; fret++){
         var ele = fret == 0 ? eleTHead : eleTBody;
         var row = ele.insertRow(ele.childElementCount);
     
         for (var stringIdx = 0; stringIdx < length(currentFret); stringIdx++){
-            this.configureCellForNote( row.insertCell(stringIdx), scaleInfo, currentFret[stringIdx]);
+            this.configureCellForNote( row.insertCell(stringIdx), scaleInfo, fret, currentFret[stringIdx]);
         }
 
-        if (fret<SHOWN_FRETS){
+        if (fret<=SHOWN_FRETS){
             currentFret = this.getNextFret(fret+1, currentFret);
         }
     }
@@ -86,7 +84,10 @@ FretBoard.prototype.createVerticalFrets= function(eleTable, scaleInfo){
     eleTable.appendChild(eleTBody);
 }
 
-FretBoard.prototype.configureCellForNote =function(cell, scaleInfo, note, isHorizontal = false){
+FretBoard.prototype.configureCellForNote =function(cell, scaleInfo, fret, note, isHorizontal = false){
+    
+    cell.classList.add("fret"+fret);
+    
     if (note.includes(":")){
         return;
     }
