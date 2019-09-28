@@ -90,13 +90,15 @@ function ChordInfo(scaleInfo, degree){
 
     this.noteMap = this.generateNoteMap(scaleInfo.noteMap, degree);
 
-    this.chordscale = Object.values(scaleInfo.noteMap)
-        .sort(function(a, b){ return a.degree-b.degree})
-        .map(noteInfo => noteInfo.note)
-    ;
+    // the Chord's True Scale
+    this.chordScale = new ScaleInfo(this.note, {
+        "notes":STD_SCALE_DEGREES,
+        "intervals":STD_SCALE_INTERVAL
+    });
+
 
     // display name for the chord
-    this.name = this.note +" "+this.getModifier() +"("+this.getDegreeAsRN()+") Chord";
+    this.name = this.note +this.getModifier() +"("+this.getDegreeAsRN()+") Chord";
 }
 
 ChordInfo.prototype.getNote = function(note){
@@ -120,19 +122,13 @@ ChordInfo.prototype.generateNoteMap= function(scaleNoteMap, degree){
 
 ChordInfo.prototype.getModifier = function(){
 
-    // the Chord's True Scale
-    var chordScale = new ScaleInfo(this.note, {
-        "notes":STD_SCALE_DEGREES,
-        "intervals":STD_SCALE_INTERVAL
-    });
-
     // iterate though the note map
-    return new MusicDiffs(Object.values(this.scaleInfo.noteMap)
+    return new MusicDiffs(Object.values(this.chordScale.noteMap)
         .sort(function(a, b){ return a.degree-b.degree})
         .map(
             // returnthe notes with distance (x#/xb) from scale value
              noteInfo => 
-                noteInfo.findClosestNoteInfoInList(chordScale)
+                noteInfo.findClosestNoteInfoInList(this.scaleInfo)
         )).toString();
 }
 
@@ -151,7 +147,7 @@ ChordInfo.prototype.getDegreeAsRN = function(){
 }
 
 ChordInfo.prototype.getDegreeAsString = function(){
-    return getDegreeAsString(this.degree);;
+    return getDegreeAsString(this.degree);
 }
 
 /*-NoteInfo------------------------------------------------*/

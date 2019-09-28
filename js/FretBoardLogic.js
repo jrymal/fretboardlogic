@@ -31,7 +31,7 @@ var SCALES = {
         "intervals":[ 2, 1, 2, 2, 1, 3, 1]
     },
     "pent":{
-        "notes":[1, 3, 5, 7],
+        "notes":[1, 2, 3, 5, 6],
         "intervals":STD_SCALE_INTERVAL
     },
     "whole":{
