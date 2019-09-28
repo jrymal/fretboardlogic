@@ -120,13 +120,13 @@ function updateAll(){
 
     new FretBoardGenerator(stringList, key, mod)
     .createScale($("scale-table"))
-    .createChord($("chord-root-table"), 1)
-    .createChord($("chord-second-table"), 2)
-    .createChord($("chord-third-table"), 3)
-    .createChord($("chord-forth-table"), 4)
-    .createChord($("chord-fifth-table"), 5)
-    .createChord($("chord-sixth-table"), 6)
-    .createChord($("chord-seventh-table"), 7)
+    .createChord("chord-root", 1)
+    .createChord("chord-second", 2)
+    .createChord("chord-third", 3)
+    .createChord("chord-fourth", 4)
+    .createChord("chord-fifth", 5)
+    .createChord("chord-sixth", 6)
+    .createChord("chord-seventh", 7)
     ;
 }
 

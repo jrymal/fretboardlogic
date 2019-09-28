@@ -14,12 +14,12 @@ FretBoardGenerator.prototype.createScale = function(element){
 }
 
 // Takes in a table to update to look appropriate for the theory of the chord (identified by the degree on the scale)
-FretBoardGenerator.prototype.createChord = function(element, degree){
+FretBoardGenerator.prototype.createChord = function(divId, degree){
     var chordInfo = this.scaleinfo.getChord(degree);
     if ( chordInfo ){
-        this.fretboard.createVerticalFrets(element, chordInfo);
+        this.fretboard.createVerticalFrets($(divId+"-table"), chordInfo);
     }
-    show(element, exists(chordInfo));
+    show($(divId), exists(chordInfo));
     return this;
 }
 
