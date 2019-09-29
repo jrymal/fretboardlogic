@@ -84,6 +84,10 @@ thead{
     border-right: 3px solid black;
 }
 
+section details {
+    margin: .5em 0;
+}
+
 .fret3,
 .fret5,
 .fret7,
