@@ -16,61 +16,93 @@ var SCALES = {
      * intervals - the intervals for each note in sequence in the scale
      */
     "maj":{
-        "mods":[],
         "notes":STD_SCALE_DEGREES,
         "intervals":STD_SCALE_INTERVAL
     },
-    "nmin":{
+    "n-min":{
         "notes":STD_SCALE_DEGREES,
-        "mods":["3b"],
         "intervals":[ 2, 1, 2, 2, 1, 2, 2]
     },
-    "hmin":{
+    "h-min":{
         "notes":STD_SCALE_DEGREES,
-        "mods":["3:b",],
         "intervals":[ 2, 1, 2, 2, 1, 3, 1]
     },
-    "pent":{
+    "pent-maj":{
         "notes":[1, 2, 3, 5, 6],
         "intervals":STD_SCALE_INTERVAL
+    },
+    "pent-min":{
+        "notes":[1, 3, 4, 5, 7],
+        "intervals":[ 2, 1, 2, 2, 1, 2, 2]
     },
     "whole":{
         "notes":[1, 2, 3, 4, 5, 6],
         "intervals":[2, 2, 2, 2, 2, 2]
     },
-    "blues":{
+    "blues6":{
         "notes":[1, 2, 3, 4, 5, 6],
         "intervals":[3, 2, 1, 1, 3, 2]
     },
-    "ionian":{
+    "blues9":{
+        "notes":[1, 2, 3, 4, 5, 6, 7, 8, 9],
+        "intervals":[2, 1, 1, 1, 2, 2, 1, 1, 1]
+    },
+    "ionian-maj":{
         "notes":STD_SCALE_DEGREES,
         "intervals":STD_SCALE_INTERVAL
     },
-    "dorian":{
+    "dorian-maj":{
         "notes":STD_SCALE_DEGREES,
         "intervals":safeRotateLeft(STD_SCALE_INTERVAL, 1)
     },
-    "phyrigian":{
+    "phyrigian-maj":{
         "notes":STD_SCALE_DEGREES,
         "intervals":safeRotateLeft(STD_SCALE_INTERVAL, 2)
     },
-    "lydian":{
+    "lydian-maj":{
         "notes":STD_SCALE_DEGREES,
         "intervals":safeRotateLeft(STD_SCALE_INTERVAL, 3)
     },
-    "mixolydian":{
+    "mixolydian-maj":{
         "notes":STD_SCALE_DEGREES,
         "intervals":safeRotateLeft(STD_SCALE_INTERVAL, 4)
     },
-    "aeolian":{
+    "aeolian-maj":{
         "notes":STD_SCALE_DEGREES,
         "intervals":safeRotateLeft(STD_SCALE_INTERVAL, 5)
     },
-    "locrian":{
+    "locrian-maj":{
         "notes":STD_SCALE_DEGREES,
         "intervals":safeRotateLeft(STD_SCALE_INTERVAL, 6)
     },
-
+    "ionian-min":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":MIN_SCALE_INTERVAL
+    },
+    "dorian-min":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":safeRotateLeft(MIN_SCALE_INTERVAL, 1)
+    },
+    "phyrigian-min":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":safeRotateLeft(MIN_SCALE_INTERVAL, 2)
+    },
+    "lydian-min":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":safeRotateLeft(MIN_SCALE_INTERVAL, 3)
+    },
+    "mixolydian-min":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":safeRotateLeft(MIN_SCALE_INTERVAL, 4)
+    },
+    "aeolian-min":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":safeRotateLeft(MIN_SCALE_INTERVAL, 5)
+    },
+    "locrian-min":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":safeRotateLeft(MIN_SCALE_INTERVAL, 6)
+    },
 };
 
 let installPromptEvent;
@@ -127,6 +159,8 @@ function updateAll(){
     .createChord("chord-fifth", 5)
     .createChord("chord-sixth", 6)
     .createChord("chord-seventh", 7)
+    .createChord("chord-eighth", 8)
+    .createChord("chord-ninth", 9)
     ;
 }
 

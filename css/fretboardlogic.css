@@ -6,6 +6,8 @@
     --color-fifth: #60a060;
     --color-sixth: #f090f0;
     --color-seventh: #f070f0;
+    --color-eighth: #f00000;
+    --color-ninth: #f07000;
 }
 
 .note-cell{
@@ -55,6 +57,13 @@
 
 .seventh{
     background: var(--color-seventh);
+}
+
+.eighth{
+    background: var(--color-eighth);
+}
+.ninth{
+    background: var(--color-ninth);
 }
 
 body {

@@ -1,6 +1,8 @@
 'use strict';
 
 var NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+var MIN_SCALE_INTERVAL = [ 2, 1, 2, 2, 2, 2, 1];
 var STD_SCALE_INTERVAL = [ 2, 2, 1, 2, 2, 2, 1];
 var STD_SCALE_DEGREES = [ 1, 2, 3, 4, 5, 6, 7];
 var CHORD_INTERVAL = [ 2, 2];
@@ -20,6 +22,8 @@ function getDegreeAsString(inDegree){
         case 5: return "fifth";
         case 6: return "sixth";
         case 7: return "seventh";
+        case 8: return "eighth";
+        case 9: return "ninth";
     }
     console.log("Unknown degree");
     return null;
@@ -141,6 +145,8 @@ ChordInfo.prototype.getDegreeAsRN = function(){
         case 5: return "V";
         case 6: return "VI";
         case 7: return "VII";
+        case 8: return "VIII";
+        case 9: return "IX";
     }
     console.log("Unknown degree");
     return null;
