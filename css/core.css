@@ -6,17 +6,21 @@
     --color-active: #4CAF50;
     --color-primary-text: #101010;
     --color-primary-border: #000000;
-    --color-primary-background: #ffffff;
-    --color-alt-row-background: #eeeeee;
+    --color-primary-background: #f5f5f5;
+    --color-alt-row-background: #d9d9d9;
     --color-wizard-background: #f1f1f1;
     --color-wizard-border: #ccc;
+    
+    --color-header-bkgnd: #612525;
+    --color-header-fgnd: var(--color-primary-background);
 }
 
 body {
     font-family: Helvetica Neue, Helvetica, Arial;
     font-size: 16px;
     line-height: 1.5;
-    margin: 0;
+    background: var(--color-primary-background);
+    color: var(--color-primary-text);
 }
 
 form {
@@ -134,6 +138,26 @@ ul.buttonbar,
   margin: 0;
   padding: 0;
   overflow: hidden;
+}
+
+h1 {
+    padding: .3em;
+    margin: 0;
+}
+.header {
+    background: var(--color-header-bkgnd);
+    color: var(--color-header-fgnd);
+}
+h2 {
+    color: var(--color-header-bkgnd);
+}
+
+.hrow{
+    margin: 1em 0;
+    width: 100%; 
+    height: 3px; 
+    background: var(--color-smoke); 
+    overflow: hidden;
 }
 
 .buttonbar li,

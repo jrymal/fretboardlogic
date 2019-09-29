@@ -66,12 +66,8 @@
     background: var(--color-ninth);
 }
 
-body {
+.topContainer {
     margin: 1.5em;
-}
-
-section{
-    margin: 1em 0;
 }
 
 caption{
@@ -104,6 +100,7 @@ thead{
 .controls{
     display: flex;
     flex-wrap: wrap;
+    margin: 1em 0;
 }
 .control{
     margin-right: 3em;
