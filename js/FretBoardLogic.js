@@ -142,6 +142,7 @@ function addListeners(){
     $("instrument").addEventListener("change", updateAll);
     $("key").addEventListener("change", updateAll);
     $("modifier").addEventListener("change", updateAll);
+    $("randomizer").addEventListener("click", randomizeScale);
 }
 
 function updateAll(){
@@ -162,5 +163,13 @@ function updateAll(){
     .createChord("chord-eighth", 8)
     .createChord("chord-ninth", 9)
     ;
+}
+
+function randomizeScale(){
+    var selectEle = $("modifier");
+    var nodeList = selectEle.querySelectorAll("option");
+    var selectedIdx =Math.floor(Math.random() * Math.floor(nodeList.length));
+    $("modifier").value = nodeList[selectedIdx].value;
+    updateAll();
 }
 
