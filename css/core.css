@@ -94,11 +94,6 @@ dd > ul {
     margin-bottom: 0;
 }
 
-button {
-    padding: .2em;
-    margin: .2em;
-}
-
 input:last-child {
     padding: 0;
     margin: 0;
