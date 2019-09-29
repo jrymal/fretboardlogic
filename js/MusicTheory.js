@@ -79,7 +79,7 @@ ScaleInfo.prototype.getRootNoteInfo = function(){
     return this.getNote(this.key);
 }
 ScaleInfo.prototype.isInScale= function(noteInfo){
-    return this.getNote(exists(noteInfo["note"]) ? noteInfo.note : noteInfo);
+    return exists(this.getNote(exists(noteInfo["note"]) ? noteInfo.note : noteInfo));
 }
 
 /*-ChordInfo------------------------------------------------*/
@@ -126,14 +126,15 @@ ChordInfo.prototype.generateNoteMap= function(scaleNoteMap, degree){
 
 ChordInfo.prototype.getModifier = function(){
 
+    console.log(this.note);
     // iterate though the note map
     return new MusicDiffs(Object.values(this.chordScale.noteMap)
         .sort(function(a, b){ return a.degree-b.degree})
         .map(
-            // returnthe notes with distance (x#/xb) from scale value
-             noteInfo => 
-                noteInfo.findClosestNoteInfoInList(this.scaleInfo)
-        )).toString();
+            // return the notes with distance (x#/xb) from scale value
+            noteInfo => noteInfo.findClosestNoteInfoInList(this.scaleInfo)
+        )
+    ).toString();
 }
 
 ChordInfo.prototype.getDegreeAsRN = function(){
@@ -169,7 +170,7 @@ NoteInfo.prototype.findClosestNoteInfoInList = function(scaleInfo) {
         var modDist = -distance;
         inScale = getNextNote(NOTES,this.note, modDist);
         if(scaleInfo.isInScale(inScale)){
-            return new NoteDiff(this.note, inScale, modDist);
+            return new NoteDiff(this, inScale, modDist);
         }
         if (distance > 0 ) {
             modDist = distance;
@@ -194,35 +195,97 @@ function NoteDiff(noteInfoA, noteB, distance){
     this.distance = distance;
 }
 
+NoteDiff.prototype.getDistanceAsString= function(){
+    var result="";
+    var char = this.distance < 0 ? 'b' : '#';
+    for (var i = Math.abs(this.distance); i > 0; i-- ){
+        result += char;
+    }
+    return result;
+}
+
+NoteDiff.prototype.toString = function(){
+    var response = "";
+    switch(this.noteInfoA.degree){
+        case 1:
+            console.log("No way this should show up");
+            return ""; 
+        case 2:
+            return this.getDistanceAsString()+"11"
+        case 3:
+            return this.getDistanceAsString()+"3"
+        case 4:
+            return this.getDistanceAsString()+"11"
+        case 5:
+            return this.getDistanceAsString()+"5"
+        case 6:
+            return this.getDistanceAsString()+"13"
+        case 7:
+            return this.getDistanceAsString()+"7"
+        case 8:
+            return this.getDistanceAsString()+"8"
+        case 9:
+            return this.getDistanceAsString()+"9"
+    }
+    return "";
+}
+
 /*-MusicDiffs------------------------------------------------*/
 function MusicDiffs(noteDiffArray){
     this.noteDiffArray = noteDiffArray;
 }
 
+var DEGREE_WEIGHT =  [
+    100, // degree 0: should never exist
+    99, // degree 1 (root): should never exist
+    7, // degree 2
+    1, // degree 3
+    9, // degree 4
+    3, // degree 5
+    11, // degree 6
+    5, // degree 7
+    13, // degree 8
+    15, // degree 9
+];
 
-MusicDiffs.prototype.toString = function() {
-    this.noteDiffArray.forEach(
-        function(noteDiff) {
-            if (noteDiff.distance != 0) {
+MusicDiffs.prototype.toString = function(degrees) {
+    var noteDiffArray = this.noteDiffArray
+        .filter(noteDiff => ((noteDiff.noteInfoA.degree == 3) || (noteDiff.noteInfoA.degree == 5)) && noteDiff.distance != 0)
+        .filter(noteDiff => exists(degrees) ? degrees.indexOf(noteDiff.noteInfoA.degree)>=0 : true)
+        .sort( (noteDiffa, noteDiffb) =>
+            DEGREE_WEIGHT[noteDiffa.noteInfoA.degree] - DEGREE_WEIGHT[noteDiffb.noteInfoA.degree]);
+
+    var result = "";
+    if (length(noteDiffArray)>0){
+        console.log(noteDiffArray);
+
+        noteDiffArray.forEach(
+            function(noteDiff) {
+                result+=" ";
                 switch(noteDiff.noteInfoA.degree){
-                    case 1: 
-                        console.log("root "+noteDiff.distance);
+                    case 1:
+                        console.log("WHAT?!?!?!");
+                    case 3:
+                        if (noteDiff.distance == -1){
+                            result = "m";
+                        } else {
+                            result+=noteDiff.toString();
+                        }
+                        break;
                     case 2: 
-                        console.log("2 "+noteDiff.distance);
-                    case 3: 
-                        console.log("3 "+noteDiff.distance);
                     case 4: 
-                        console.log("4 "+noteDiff.distance);
                     case 5: 
-                        console.log("5 "+noteDiff.distance);
                     case 6: 
-                        console.log("6 "+noteDiff.distance);
                     case 7: 
-                        console.log("7 "+noteDiff.distance);
+                    case 8:
+                    case 9:
+                        result+=noteDiff.toString();
+                        break;
                 }
+                return "";
             }
-        }
-    );
+        );
+    }
 
-    return "";
+    return result;
 }
