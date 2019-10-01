@@ -5,7 +5,6 @@ var NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 var MIN_SCALE_INTERVAL = [ 2, 1, 2, 2, 2, 2, 1];
 var STD_SCALE_INTERVAL = [ 2, 2, 1, 2, 2, 2, 1];
 var STD_SCALE_DEGREES = [ 1, 2, 3, 4, 5, 6, 7];
-var CHORD_INTERVAL = [ 2, 2];
 
 function getNextNote(noteList, note, dist = 1){
     var noteListLength = length(noteList);
@@ -92,49 +91,45 @@ function ChordInfo(scaleInfo, degree){
     // the root note in this chord
     this.note = scaleInfo.scale[degree-1];
 
-    this.noteMap = this.generateNoteMap(scaleInfo.noteMap, degree);
-
     // the Chord's True Scale
     this.chordScale = new ScaleInfo(this.note, {
         "notes":STD_SCALE_DEGREES,
         "intervals":STD_SCALE_INTERVAL
     });
 
+     // iterate though the note map
+    this.musicDiff = new MusicDiffs(Object.values(this.chordScale.noteMap)
+        .sort(function(a, b){ return a.degree-b.degree})
+        .map(
+            // return the notes with distance (x#/xb) from scale value
+            noteInfo => noteInfo.findClosestNoteInfoInList(this.scaleInfo)
+        )
+    );
+
+    this.noteMap = this.generateNoteMap(this.musicDiff.asScale(this.chordScale.scale));
+
+    var chordName = new ChordName(this.musicDiff);
 
     // display name for the chord
-    this.name = this.note +this.getModifier() +"("+this.getDegreeAsRN()+") Chord";
+    this.name = this.note +chordName.primaryName + "<sup>"+chordName.addedNotes+"</sup> ("+this.getDegreeAsRN()+") Chord";
 }
 
 ChordInfo.prototype.getNote = function(note){
     return this.noteMap[note];
 }
 
-ChordInfo.prototype.generateNoteMap= function(scaleNoteMap, degree){
-    var o = new Object();
+var CHORD_DEGREES = [1,3,5];
 
-    var note = this.note;
-    var totalDistance = 0;
-    for(var degree = 0; degree <= length(CHORD_INTERVAL); degree++){
-        o[note] = new NoteInfo(note, totalDistance+1);
-        var distance = CHORD_INTERVAL[degree];
-        note = getNextNote(this.scaleInfo.scale, note, distance);
-        totalDistance+=distance;
-    }
+ChordInfo.prototype.generateNoteMap= function(scale){
+    var o = {};
+    var snote = this.note;
+    CHORD_DEGREES
+        .forEach(function(degree){
+        var noteInfo = new NoteInfo( getNextNote(scale, snote, degree-1), degree);
+        o[noteInfo.note] = noteInfo;
+        });
 
     return o;
-}
-
-ChordInfo.prototype.getModifier = function(){
-
-    console.log(this.note);
-    // iterate though the note map
-    return new MusicDiffs(Object.values(this.chordScale.noteMap)
-        .sort(function(a, b){ return a.degree-b.degree})
-        .map(
-            // return the notes with distance (x#/xb) from scale value
-            noteInfo => noteInfo.findClosestNoteInfoInList(this.scaleInfo)
-        )
-    ).toString();
 }
 
 ChordInfo.prototype.getDegreeAsRN = function(){
@@ -235,56 +230,101 @@ function MusicDiffs(noteDiffArray){
     this.noteDiffArray = noteDiffArray;
 }
 
-var DEGREE_WEIGHT =  [
-    100, // degree 0: should never exist
-    99, // degree 1 (root): should never exist
-    7, // degree 2
-    1, // degree 3
-    9, // degree 4
-    3, // degree 5
-    11, // degree 6
-    5, // degree 7
-    13, // degree 8
-    15, // degree 9
-];
+MusicDiffs.prototype.asScale = function(scale) {
+    var clonedScale = clone(scale);
 
-MusicDiffs.prototype.toString = function(degrees) {
-    var noteDiffArray = this.noteDiffArray
-        .filter(noteDiff => ((noteDiff.noteInfoA.degree == 3) || (noteDiff.noteInfoA.degree == 5)) && noteDiff.distance != 0)
-        .filter(noteDiff => exists(degrees) ? degrees.indexOf(noteDiff.noteInfoA.degree)>=0 : true)
-        .sort( (noteDiffa, noteDiffb) =>
-            DEGREE_WEIGHT[noteDiffa.noteInfoA.degree] - DEGREE_WEIGHT[noteDiffb.noteInfoA.degree]);
-
-    var result = "";
-    if (length(noteDiffArray)>0){
-        console.log(noteDiffArray);
-
-        noteDiffArray.forEach(
-            function(noteDiff) {
-                result+=" ";
-                switch(noteDiff.noteInfoA.degree){
-                    case 1:
-                        console.log("WHAT?!?!?!");
-                    case 3:
-                        if (noteDiff.distance == -1){
-                            result = "m";
-                        } else {
-                            result+=noteDiff.toString();
-                        }
-                        break;
-                    case 2: 
-                    case 4: 
-                    case 5: 
-                    case 6: 
-                    case 7: 
-                    case 8:
-                    case 9:
-                        result+=noteDiff.toString();
-                        break;
-                }
-                return "";
+    // apply noteDiffs
+    this.noteDiffArray
+        .forEach(
+            function(noteDiff){
+                var curNote = clonedScale[noteDiff.noteInfoA.degree - 1];
+                clonedScale[noteDiff.noteInfoA.degree - 1] = getNextNote(NOTES, curNote, noteDiff.distance);
             }
         );
+
+    return clonedScale;
+}
+
+/*-ChordName------------------------------------------------*/
+function ChordName(musicDiffs, degrees) {
+    var ndList = musicDiffs.noteDiffArray
+        .filter(noteDiff => ((noteDiff.noteInfoA.degree == 3) || (noteDiff.noteInfoA.degree == 5)) && noteDiff.distance != 0)
+        .filter(noteDiff => exists(degrees) ? degrees.indexOf(noteDiff.noteInfoA.degree)>=0 : true);
+    if (length(ndList) > 0){
+        var ndMap = ndList.reduce( function(map, noteDiff){
+            map[noteDiff.noteInfoA.degree] = noteDiff;
+            return map;
+        },{});
+
+        this.primaryName = this.identifyPrimaryName(ndMap);
+        this.addedNotes = this.identifyAddedNotes(ndMap);
+    } else {
+        this.primaryName = "";
+        this.addedNotes = "";
+
+    }
+}
+
+ChordName.prototype.identifyPrimaryName=function(ndMap){
+    if (this.isFlat(ndMap, 3) && this.isFlat(ndMap, 5)){
+        delete ndMap[3];
+        delete ndMap[5];
+        return "dim";
+    }
+    else if (this.isNormal(ndMap, 3) && this.isSharp(ndMap, 5)){
+        delete ndMap[3];
+        delete ndMap[5];
+        return "aug";
+    }
+    else if (this.isFlat(ndMap, 3) && this.isNormal(ndMap, 5)){
+        delete ndMap[3];
+        delete ndMap[5];
+        return "min";
+    }
+    else if (this.isNormal(ndMap, 3) && this.isNormal(ndMap, 5)){
+        delete ndMap[3];
+        delete ndMap[5];
+        return "maj";
+    }
+    else if (this.isFlat(ndMap, 3)){
+        // separate to handle the cases where the 5th is altered in some way
+        delete ndMap[3];
+        return "min";
+    }
+
+    return "";
+}
+
+ChordName.prototype.isSharp=function(ndMap, degree){
+    return exists(ndMap[degree]) && (ndMap[degree].distance == 1);
+}
+ChordName.prototype.isFlat=function(ndMap, degree){
+    return exists(ndMap[degree]) && (ndMap[degree].distance == -1);
+}
+ChordName.prototype.isNormal=function(ndMap, degree){
+    return !exists(ndMap[degree]) || (ndMap[degree].distance == 0);
+}
+
+ChordName.prototype.identifyAddedNotes=function(ndMap){
+    var result="";
+    for(var i = 1; i <= 9; i++){
+        if (exists(ndMap[i])){
+            var noteDiff = ndMap[i];
+            switch(noteDiff.noteInfoA.degree){
+                case 1:
+                    console.log("WHAT?!?!?!");
+                case 3:
+                case 5: 
+                case 2: 
+                case 4: 
+                case 6: 
+                case 7: 
+                case 8:
+                case 9:
+                    result+=noteDiff.toString();
+                    break;
+            }
+        }
     }
 
     return result;
