@@ -107,17 +107,20 @@ var SCALES = {
 
 function FretBoardApp(){
     this.installPromptEvent;
+    this.addListeners();
 }
+
 FretBoardApp.prototype.addListeners = function(){
     var me = this;
-    window.addEventListener('onpopstate', (event) => {
+    window.addEventListener("popstate", (event) => {
         me.setState(event.state);
     });
-    window.addEventListener('onbeforeunload', (event) => {
-        window.history.replacestate(me.getState, "Fret Board Logic", "");
+    window.addEventListener("beforeunload", (event) => {
+        window.history.replacestate(me.getState(), "Fret Board Logic", "");
+        window.history.replacestate(me.getState(), "Fret Board Logic", "");
     });
     
-    window.addEventListener('beforeinstallprompt', (event) => {
+    window.addEventListener("beforeinstallprompt", (event) => {
         // Prevent Chrome <= 67 from automatically showing the prompt
         event.preventDefault();
         // Stash the event so it can be triggered later.
@@ -158,7 +161,6 @@ FretBoardApp.prototype.getState = function(){
 
 let app = new FretBoardApp();
 function init(){
-    app.addListeners();
     updateAll();
 }
 
@@ -167,9 +169,9 @@ function installApp() {
     show($('install-app'), false);
   
     // Show the modal add to home screen dialog
-    installPromptEvent.prompt();
+    app.installPromptEvent.prompt();
     // Wait for the user to respond to the prompt
-    installPromptEvent.userChoice.then((choice) => {
+    app.installPromptEvent.userChoice.then((choice) => {
         if (choice.outcome === 'accepted') {
           console.debug('User accepted the A2HS prompt');
         } else {
