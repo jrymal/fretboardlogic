@@ -106,33 +106,21 @@ var SCALES = {
 };
 
 function FretBoardApp(){
-    this.installPromptEvent;
-    this.addListeners();
-}
-
-FretBoardApp.prototype.addListeners = function(){
-    var me = this;
-    window.addEventListener("popstate", (event) => {
-        me.setState(event.state);
-    });
-    window.addEventListener("beforeunload", (event) => {
-        window.history.replacestate(me.getState(), "Fret Board Logic", "");
-        window.history.replacestate(me.getState(), "Fret Board Logic", "");
-    });
-    
-    window.addEventListener("beforeinstallprompt", (event) => {
+    window.onbeforeinstallprompt = function(event){
         // Prevent Chrome <= 67 from automatically showing the prompt
         event.preventDefault();
         // Stash the event so it can be triggered later.
-        me.installPromptEvent = event;
+        app.installPromptEvent = event;
 
         show($('install-app'), true);
-    });
+    };
+}
 
-    $("instrument").addEventListener("change", updateAll);
-    $("key").addEventListener("change", updateAll);
-    $("modifier").addEventListener("change", updateAll);
-    $("randomizer").addEventListener("click", randomizeScale);
+FretBoardApp.prototype.addUiListeners = function(){
+    $("instrument").addEventListener("change", this.updateAll);
+    $("key").addEventListener("change", this.updateAll);
+    $("modifier").addEventListener("change", this.updateAll);
+    $("randomizer").addEventListener("click", this.randomizeScale);
 }
 
 FretBoardApp.prototype.setState = function(state){
@@ -146,8 +134,6 @@ FretBoardApp.prototype.setState = function(state){
         if (state["modifier"]){
             $("modifier").value = state["modifier"];
         }
-
-        updateAll();
     }
 }
 
@@ -159,30 +145,31 @@ FretBoardApp.prototype.getState = function(){
     };
 }
 
-let app = new FretBoardApp();
-function init(){
-    updateAll();
+FretBoardApp.prototype.init = function(){
+    this.setState(history.state);
+    this.addUiListeners();
+    this.updateAll();
 }
 
-function installApp() {
-
+FretBoardApp.prototype.installApp = function(){
     show($('install-app'), false);
   
     // Show the modal add to home screen dialog
-    app.installPromptEvent.prompt();
+    this.installPromptEvent.prompt();
     // Wait for the user to respond to the prompt
-    app.installPromptEvent.userChoice.then((choice) => {
+    this.installPromptEvent.userChoice.then((choice) => {
         if (choice.outcome === 'accepted') {
           console.debug('User accepted the A2HS prompt');
         } else {
           console.debug('User dismissed the A2HS prompt');
         }
         // Clear the saved prompt since it can't be used again
-        installPromptEvent = null;
+        this.installPromptEvent = null;
     });
 }
 
-function updateAll(){
+FretBoardApp.prototype.updateAll = function(){
+    history.replaceState( app.getState(), window.title, window.location);
 
     var stringList = INSTRUMENTS[getSelectedValue($("instrument"))];
     var mod = SCALES[getSelectedValue($("modifier"))];
@@ -202,11 +189,27 @@ function updateAll(){
     ;
 }
 
-function randomizeScale(){
+FretBoardApp.prototype.randomizeScale = function(){
     var selectEle = $("modifier");
     var nodeList = selectEle.querySelectorAll("option");
     var selectedIdx =Math.floor(Math.random() * Math.floor(nodeList.length));
     $("modifier").value = nodeList[selectedIdx].value;
-    updateAll();
+    this.updateAll();
 }
+
+/* HTML functions */
+let app = new FretBoardApp();
+
+function init(){
+    app.init();
+}
+
+function installApp() {
+    app.installApp();
+}
+
+function randomizeScale(){
+    app.randomizeScale();
+}
+
 

@@ -108,9 +108,6 @@
 
             <nav class="nav nav-menu" role="navigation">
                 <ul>
-                    <li><a href="#scales">Scales</a></li>
-                    <li><a href="#chords">Chords</a></li>
-                    <!--li><a href="#nameit">Name It</a></li-->
                     <li id="install-app" class="hidden"><a href="#" onClick="installApp()">Install as an App</a></li>
                 </ul>
             </nav>
@@ -185,7 +182,7 @@
             if('serviceWorker' in navigator) {
                 navigator.serviceWorker
                     .register('fretboardlogic-serviceworker.js')
-                    .then(function() { console.log("Service Worker Registered"); })
+                    .then(function() { console.debug("Service Worker Registered"); })
                     .catch(function(error) {console.warn('Registration failed with ' + error);});
             }
         </script>

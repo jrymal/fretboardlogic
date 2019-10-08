@@ -27,10 +27,10 @@ self.addEventListener('install', function(event) {
 
 self.addEventListener('fetch', function(event) {
     var updateCache = function(request){
-        console.debug(CACHE_NAME+': retrieving page '+request.url);
+        //console.debug(CACHE_NAME+': retrieving page '+request.url);
         return caches.open(CACHE_NAME).then(function (cache) {
             return fetch(request).then(function (response) {
-                console.debug(CACHE_NAME+': add page to offline'+response.url);
+                //console.debug(CACHE_NAME+': add page to offline'+response.url);
                 return cache.put(request, response);
             });
         });
