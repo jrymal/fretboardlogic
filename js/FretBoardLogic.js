@@ -105,18 +105,60 @@ var SCALES = {
     },
 };
 
-let installPromptEvent;
-function init(){
+function FretBoardApp(){
+    this.installPromptEvent;
+}
+FretBoardApp.prototype.addListeners = function(){
+    var me = this;
+    window.addEventListener('onpopstate', (event) => {
+        me.setState(event.state);
+    });
+    window.addEventListener('onbeforeunload', (event) => {
+        window.history.replacestate(me.getState, "Fret Board Logic", "");
+    });
+    
     window.addEventListener('beforeinstallprompt', (event) => {
         // Prevent Chrome <= 67 from automatically showing the prompt
         event.preventDefault();
         // Stash the event so it can be triggered later.
-        installPromptEvent = event;
+        me.installPromptEvent = event;
 
         show($('install-app'), true);
     });
 
-    addListeners();
+    $("instrument").addEventListener("change", updateAll);
+    $("key").addEventListener("change", updateAll);
+    $("modifier").addEventListener("change", updateAll);
+    $("randomizer").addEventListener("click", randomizeScale);
+}
+
+FretBoardApp.prototype.setState = function(state){
+    if (state){
+        if (state["instrument"]){
+            $("instrument").value = state["instrument"];
+        }
+        if (state["key"]){
+            $("key").value = state["key"];
+        }
+        if (state["modifier"]){
+            $("modifier").value = state["modifier"];
+        }
+
+        updateAll();
+    }
+}
+
+FretBoardApp.prototype.getState = function(){
+    return {
+        "instrument":$("instrument").value,
+        "key":$("key").value,
+        "modifier":$("modifier").value
+    };
+}
+
+let app = new FretBoardApp();
+function init(){
+    app.addListeners();
     updateAll();
 }
 
@@ -136,13 +178,6 @@ function installApp() {
         // Clear the saved prompt since it can't be used again
         installPromptEvent = null;
     });
-}
-
-function addListeners(){
-    $("instrument").addEventListener("change", updateAll);
-    $("key").addEventListener("change", updateAll);
-    $("modifier").addEventListener("change", updateAll);
-    $("randomizer").addEventListener("click", randomizeScale);
 }
 
 function updateAll(){
