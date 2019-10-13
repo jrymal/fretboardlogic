@@ -102,9 +102,9 @@ FretBoard.prototype.configureCellForNote =function(cell, scaleInfo, fret, note, 
     if (ni){
         eleNote.classList.add("highlighted-note");
         eleNote.classList.add(ni.getDegreeAsString());
+        eleNote.innerHTML=note;
     }
     
-    eleNote.innerHTML=note;
     
     cell.appendChild(eleNote);
     cell.classList.add("note-cell");
