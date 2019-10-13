@@ -129,7 +129,7 @@ ChordInfo.prototype.hasMatch = function(chordMap){
         .filter( (chord) => this.equalsNoteMap(chord.noteMap) );
 
     if (matches.length > 0){
-        console.log(this.name+" is duplicated by "+matches.map((chordInfo) => chordInfo.note ));
+        console.log(this.name+" is duplicated by "+matches.map((chordInfo) => chordInfo.name+"," ));
     }
 
     return matches.length > 0;
