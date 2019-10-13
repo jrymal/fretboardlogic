@@ -43,6 +43,7 @@ function ScaleInfo(key, modifiers){
 
     // String
     this.name = key +" Scale";
+    this.chords = {};
 }
 
 ScaleInfo.prototype.generateNoteMap= function(modifiers){
@@ -60,7 +61,15 @@ ScaleInfo.prototype.generateNoteMap= function(modifiers){
 
 ScaleInfo.prototype.getChord = function(degree){
     if (this.modifiers.notes.indexOf(degree) >= 0){
-        return new ChordInfo(this,  degree);
+        var foundChord = this.chords[degree];
+        if (!exists(foundChord)) {
+            foundChord = new ChordInfo(this,  degree);
+            this.chords[degree] = foundChord;
+        }
+
+        if (!foundChord.hasMatch(this.chords)){
+            return foundChord;
+        }
     }
     return null;
 }
@@ -113,6 +122,13 @@ function ChordInfo(scaleInfo, degree){
     // display name for the chord
     this.name = this.note +chordName.primaryName + "<sup>"+chordName.addedNotes+"</sup> ("+this.getDegreeAsRN()+") Chord";
 }
+
+ChordInfo.prototype.hasMatch = function(chordMap){
+    // TODO: iterate through the map to see if there are chords with the same notes, 
+    // once one is found, return true
+    return false;
+}
+
 
 ChordInfo.prototype.getNote = function(note){
     return this.noteMap[note];
