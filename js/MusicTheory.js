@@ -124,11 +124,22 @@ function ChordInfo(scaleInfo, degree){
 }
 
 ChordInfo.prototype.hasMatch = function(chordMap){
-    // TODO: iterate through the map to see if there are chords with the same notes, 
-    // once one is found, return true
-    return false;
+    var matches = Object.values(chordMap)
+        .filter( (chord) => this !== chord )
+        .filter( (chord) => this.equalsNoteMap(chord.noteMap) );
+
+    if (matches.length > 0){
+        console.log(this.name+" is duplicated by "+matches.map((chordInfo) => chordInfo.note ));
+    }
+
+    return matches.length > 0;
 }
 
+ChordInfo.prototype.equalsNoteMap = function(noteMap){
+    return Object.keys(noteMap)
+        .filter( (note) => exists(this.noteMap[note]) )
+        .length == Object.keys(this.noteMap).length;
+}
 
 ChordInfo.prototype.getNote = function(note){
     return this.noteMap[note];
