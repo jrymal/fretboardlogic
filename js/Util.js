@@ -78,3 +78,19 @@ function safeRotateLeft(inList, firstNodeIdx){
     list.push.apply(list, list.splice(0, firstNodeIdx));
     return list;
 }
+
+function getDataAttribute(element, dataName, defaultValue){
+    let value = element.dataset 
+        ? element.dataset[dataName] 
+        : ( hasMethod(element.getAttribute) 
+            ? element.getAttribute("data-"+dataName) 
+            : "" );                                            
+    return !exists(value) ? defaultValue : value;
+}
+
+function randomizeList(selectEleId){
+    var selectEle = $(selectEleId);
+    var nodeList = selectEle.querySelectorAll("option");
+    var selectedIdx = Math.floor(Math.random() * Math.floor(nodeList.length));
+    $(selectEleId).value = nodeList[selectedIdx].value;
+}

@@ -18,12 +18,14 @@
 .hnote{
     height: 1.2em;
 }
-
 .note{
     border-radius: 1em;
     height: 1.2em;
-    width: 2em;
     line-height: normal;
+}
+
+.frets .note{
+    width: 2em;
     margin: 0;
 }
 
@@ -128,3 +130,24 @@ section details {
     width: 3em;
     margin-right: 1em;
 }
+
+td.key{
+    min-width: 1em;
+}
+
+tr.sharp td.key{
+    border-bottom: none;
+}
+tr.natural td.key{
+    border-top: none;
+}
+
+tr.sharp {
+    min-height: 2em;
+}
+
+tr.sharp td.note-cell{
+    background: black;
+}
+
+

@@ -41,6 +41,7 @@ FretBoard.prototype.createHorizontalFrets= function(eleTable, scaleInfo){
         var currentNote = new Array(this.stringList[stringIdx]);
 
         var row = eleTBody.insertRow(length(this.stringList) - 1 - stringIdx);
+        row.classList.add("frets");
     
         for (var fret = 0; fret <= SHOWN_FRETS; fret++){
             this.configureCellForNote( row.insertCell(fret), scaleInfo, fret, currentNote[0], true);
@@ -68,6 +69,7 @@ FretBoard.prototype.createVerticalFrets= function(eleTable, scaleInfo){
     for (var fret = 0; fret <= SHOWN_FRETS; fret++){
         var ele = fret == 0 ? eleTHead : eleTBody;
         var row = ele.insertRow(ele.childElementCount);
+        row.classList.add("frets");
     
         for (var stringIdx = 0; stringIdx < length(currentFret); stringIdx++){
             this.configureCellForNote( row.insertCell(stringIdx), scaleInfo, fret, currentFret[stringIdx]);

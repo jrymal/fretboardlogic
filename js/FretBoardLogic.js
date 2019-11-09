@@ -4,8 +4,10 @@ var INSTRUMENTS = {
     "banjo5":["G:5", "D", "G", "B", "D"],
     "bass4":["E", "A", "D", "G"],
     "bass5":["B", "E", "A", "D", "G"],
+    "bass6":["B", "E", "A", "D", "G", "C"],
     "guitar":["E", "A", "D", "G", "B", "E"],
     "guitar7":["B", "E", "A", "D", "G", "B", "E"],
+    "guitar8T":["E","B", "E", "A", "D", "G", "B", "E"],
     "mandolin":["G", "D", "A", "E"],
 };
 
@@ -120,7 +122,7 @@ FretBoardApp.prototype.addUiListeners = function(){
     $("instrument").addEventListener("change", this.updateAll);
     $("key").addEventListener("change", this.updateAll);
     $("modifier").addEventListener("change", this.updateAll);
-    $("randomizer").addEventListener("click", this.randomizeScale);
+    $("randomizer").addEventListener("click", randomizeScale);
 }
 
 FretBoardApp.prototype.setState = function(state){
@@ -171,11 +173,19 @@ FretBoardApp.prototype.installApp = function(){
 FretBoardApp.prototype.updateAll = function(){
     history.replaceState( app.getState(), window.title, window.location);
 
-    var stringList = INSTRUMENTS[getSelectedValue($("instrument"))];
     var mod = SCALES[getSelectedValue($("modifier"))];
     var key = getSelectedValue($("key"));
 
-    new FretBoardGenerator(stringList, key, mod)
+    var gen
+    var inst = getSelectedValue($("instrument"));
+    if (inst === "piano") {
+        gen = new KeyBoardGenerator(key, mod);
+    } else {
+        var stringList = INSTRUMENTS[inst];
+        gen = new FretBoardGenerator(stringList, key, mod);
+    }
+
+    gen
     .createScale($("scale-table"))
     .createChord("chord-root", 1)
     .createChord("chord-second", 2)
@@ -190,10 +200,8 @@ FretBoardApp.prototype.updateAll = function(){
 }
 
 FretBoardApp.prototype.randomizeScale = function(){
-    var selectEle = $("modifier");
-    var nodeList = selectEle.querySelectorAll("option");
-    var selectedIdx =Math.floor(Math.random() * Math.floor(nodeList.length));
-    $("modifier").value = nodeList[selectedIdx].value;
+    randomizeList("modifier");
+    randomizeList("key");
     this.updateAll();
 }
 

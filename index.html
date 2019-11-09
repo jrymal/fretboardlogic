@@ -19,6 +19,7 @@
         <script type="text/javascript" src="js/MusicTheory.js"> </script>
         <script type="text/javascript" src="js/FretBoardLogic.js" async> </script>
         <script type="text/javascript" src="js/FretBoardGenerator.js" async> </script>
+        <script type="text/javascript" src="js/KeyBoardGenerator.js" async> </script>
         <link rel="stylesheet" type="text/css" href="css/core.css" media="all" async/>
         <link rel="stylesheet" type="text/css" href="css/fretboardlogic.css" media="all" async/>
 
@@ -47,9 +48,12 @@
                             <option value="banjo5">Banjo - 5 String</option>
                             <option value="bass4">Bass - 4 String</option>
                             <option value="bass5">Bass - 5 String</option>
+                            <option value="bass6">Bass - 6 String</option>
                             <option value="guitar" selected>Guitar - 6 String</option>
                             <option value="guitar7">Guitar - 7 String</option>
+                            <option value="guitar8T">Guitar - 8 String (Tosin Tuned)</option>
                             <option value="mandolin">Mandolin</option>
+                            <option value="piano">Piano</option>
                         </select>
                     </div>
                 </div>
@@ -186,6 +190,5 @@
                     .catch(function(error) {console.warn('Registration failed with ' + error);});
             }
         </script>
-
     </body>
 </html>
