@@ -99,7 +99,7 @@ KeyBoard.prototype.configureCellForNote =function(cell, scaleInfo, note){
     if (ni){
         eleNote.classList.add("highlighted-note");
         eleNote.classList.add(ni.getDegreeAsString());
-        eleNote.innerHTML=note;
+        eleNote.innerHTML=getDisplayNote(note);
     }
     
     cell.appendChild(eleNote);

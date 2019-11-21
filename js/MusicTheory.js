@@ -1,4 +1,7 @@
 'use strict';
+var CHAR_FLAT="&#9837;";
+var CHAR_NATURAL="&#9838;";
+var CHAR_SHARP="&#9839;";
 
 var NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
@@ -11,9 +14,12 @@ function getNextNote(noteList, note, dist = 1){
     return noteList[(noteList.indexOf(note)+dist+noteListLength) % noteListLength];
 }
 
-function getDegreeAsString(inDegree){
-    var degree = isBlank(inDegree) ? this.degree : inDegree;
-    switch(degree){
+function getDisplayNote(note){
+    return note.replace("#", CHAR_SHARP).replace("b",CHAR_FLAT);
+}
+
+function getDegreeAsString(scaleIdx){
+    switch(scaleIdx){
         case 1: return "root";
         case 2: return "second";
         case 3: return "third";
@@ -24,7 +30,20 @@ function getDegreeAsString(inDegree){
         case 8: return "eighth";
         case 9: return "ninth";
     }
-    console.log("Unknown degree");
+    console.log("Unknown scale idx: "+scaleIdx);
+    return null;
+}
+function getDegreeAsRN(scaleIdx){
+    switch(scaleIdx){
+        case 1: return "I";
+        case 2: return "II";
+        case 3: return "III";
+        case 4: return "IV";
+        case 5: return "V";
+        case 6: return "VI";
+        case 7: return "VII";
+    }
+    console.log("Unknown scale idx: "+scaleIdx);
     return null;
 }
 
@@ -42,7 +61,7 @@ function ScaleInfo(key, modifiers){
         .map(noteInfo => noteInfo.note);
 
     // String
-    this.name = key +" Scale";
+    this.name = getDisplayNote(key) +" Scale";
     this.chords = {};
 }
 
@@ -59,12 +78,12 @@ ScaleInfo.prototype.generateNoteMap= function(modifiers){
     return o;
 }
 
-ScaleInfo.prototype.getChord = function(degree){
-    if (this.modifiers.notes.indexOf(degree) >= 0){
-        var foundChord = this.chords[degree];
+ScaleInfo.prototype.getChord = function(scaleIdx){
+    if (this.modifiers.notes.indexOf(scaleIdx) >= 0){
+        var foundChord = this.chords[scaleIdx];
         if (!exists(foundChord)) {
-            foundChord = new ChordInfo(this,  degree);
-            this.chords[degree] = foundChord;
+            foundChord = new ChordInfo(this,  scaleIdx);
+            this.chords[scaleIdx] = foundChord;
         }
 
         if (!foundChord.hasMatch(this.chords)){
@@ -91,16 +110,37 @@ ScaleInfo.prototype.isInScale= function(noteInfo){
     return exists(this.getNote(exists(noteInfo["note"]) ? noteInfo.note : noteInfo));
 }
 
+ScaleInfo.prototype.getDegreeFromNote= function(noteInfo){
+
+    if (!exists(this.majScale)){
+        this.majScale = new ScaleInfo(this.key, {
+            "notes":STD_SCALE_DEGREES,
+            "intervals":STD_SCALE_INTERVAL
+        });
+    }
+
+    var noteDiff = noteInfo.findClosestNoteInfoInList(this.majScale);
+    if (noteDiff){
+        return noteDiff.asDegree();
+    }
+
+    return "";
+}
+
 /*-ChordInfo------------------------------------------------*/
-function ChordInfo(scaleInfo, degree){
+function ChordInfo(scaleInfo, scaleIdx){
     // the degree in the scale
-    this.degree=degree;
+    this.scaleIdx=scaleIdx;
+
     // The scale info object
     this.scaleInfo = scaleInfo;
 
     // the root note in this chord
-    this.note = scaleInfo.scale[degree-1];
+    this.note = scaleInfo.scale[scaleIdx-1];
+    this.noteInfo = scaleInfo.getNote(this.note);
 
+    this.degree= this.scaleInfo.getDegreeFromNote(this.noteInfo);
+    
     // the Chord's True Scale
     this.chordScale = new ScaleInfo(this.note, {
         "notes":STD_SCALE_DEGREES,
@@ -120,7 +160,11 @@ function ChordInfo(scaleInfo, degree){
     var chordName = new ChordName(this.musicDiff, Object.values(this.noteMap).map((noteInfo) => noteInfo.degree));
 
     // display name for the chord
-    this.name = this.note +chordName.primaryName + "<sup>"+chordName.addedNotes+"</sup> ("+this.getDegreeAsRN()+") Chord";
+    this.name = this.note +chordName.primaryName;
+    if (!isBlank(chordName.addedNotes)){
+        this.name += "<sup>"+chordName.addedNotes+"</sup> ";
+    }
+    this.name += "  -  "+this.getDegreeAsRN();
 }
 
 ChordInfo.prototype.hasMatch = function(chordMap){
@@ -163,23 +207,11 @@ ChordInfo.prototype.generateNoteMap= function(scale){
 }
 
 ChordInfo.prototype.getDegreeAsRN = function(){
-    switch(this.degree){
-        case 1: return "I";
-        case 2: return "II";
-        case 3: return "III";
-        case 4: return "IV";
-        case 5: return "V";
-        case 6: return "VI";
-        case 7: return "VII";
-        case 8: return "VIII";
-        case 9: return "IX";
-    }
-    console.log("Unknown degree");
-    return null;
+    return this.degree;
 }
 
 ChordInfo.prototype.getDegreeAsString = function(){
-    return getDegreeAsString(this.degree);
+    return getDegreeAsString(this.scaleIdx);
 }
 
 /*-NoteInfo------------------------------------------------*/
@@ -222,11 +254,20 @@ function NoteDiff(noteInfoA, noteB, distance){
 
 NoteDiff.prototype.getDistanceAsString= function(){
     var result="";
-    var char = this.distance < 0 ? 'b' : '#';
+    var char = this.distance < 0 ? CHAR_FLAT : CHAR_NATURAL;
     for (var i = Math.abs(this.distance); i > 0; i-- ){
         result += char;
     }
     return result;
+}
+
+NoteDiff.prototype.asDegree = function(){
+    var deg = "";
+    var dist = this.getDistanceAsString();
+    if (dist.length > 0) {
+        deg += dist;
+    }
+    return "<code>"+deg+getDegreeAsRN(this.noteInfoA.degree)+"</code>";
 }
 
 NoteDiff.prototype.toString = function(){

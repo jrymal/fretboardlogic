@@ -59,7 +59,6 @@ FretBoard.prototype.createVerticalFrets= function(eleTable, scaleInfo){
     removeAllChildren(eleTable);
 
     var eleCaption = document.createElement("caption");
-    var eleTHead = document.createElement("thead");
     var eleTBody= document.createElement("tbody");
 
     eleCaption.innerHTML = scaleInfo.name;
@@ -67,8 +66,7 @@ FretBoard.prototype.createVerticalFrets= function(eleTable, scaleInfo){
 
     var currentFret = clone(this.stringList);
     for (var fret = 0; fret <= SHOWN_FRETS; fret++){
-        var ele = fret == 0 ? eleTHead : eleTBody;
-        var row = ele.insertRow(ele.childElementCount);
+        var row = eleTBody.insertRow(eleTBody.childElementCount);
         row.classList.add("frets");
     
         for (var stringIdx = 0; stringIdx < length(currentFret); stringIdx++){
@@ -82,7 +80,6 @@ FretBoard.prototype.createVerticalFrets= function(eleTable, scaleInfo){
 
 
     eleTable.appendChild(eleCaption);
-    eleTable.appendChild(eleTHead);
     eleTable.appendChild(eleTBody);
 }
 
@@ -104,7 +101,7 @@ FretBoard.prototype.configureCellForNote =function(cell, scaleInfo, fret, note, 
     if (ni){
         eleNote.classList.add("highlighted-note");
         eleNote.classList.add(ni.getDegreeAsString());
-        eleNote.innerHTML=note;
+        eleNote.innerHTML=getDisplayNote(note);
     }
     
     

@@ -44,7 +44,7 @@
                 <div class="control">
                     <label for="instrument">Instrument</label>
                     <div>
-                        <select class="tagAlong" id="instrument" aria-label="Instrument choice" >
+                        <select name="instrument" class="tagAlong" id="instrument" aria-label="Instrument choice" >
                             <option value="banjo5">Banjo - 5 String</option>
                             <option value="bass4">Bass - 4 String</option>
                             <option value="bass5">Bass - 5 String</option>
@@ -61,21 +61,21 @@
                 <div class="control">
                     <label for="key">Key</label>
                     <div>
-                        <select class="tagAlong" id="key" aria-label="Key choice">
+                        <select name="key" class="tagAlong" id="key" aria-label="Key choice">
                             <option value="C">C</option>
-                            <option value="C#">C#/Db</option>
+                            <option value="C#">C&#9839;/D&#9837;</option>
                             <option value="D">D</option>
-                            <option value="D#">D#/Eb</option>
+                            <option value="D#">D&#9839;/E&#9837;</option>
                             <option value="E">E</option>
                             <option value="F">F</option>
-                            <option value="F#">F#/Gb</option>
+                            <option value="F#">F&#9839;/G&#9837;</option>
                             <option value="G">G</option>
-                            <option value="G#">G#/Ab</option>
+                            <option value="G#">G&#9839;/A&#9837;</option>
                             <option value="A">A</option>
-                            <option value="A#">A#/Bb</option>
+                            <option value="A#">A&#9839;/B&#9837;</option>
                             <option value="B">B</option>
                         </select>
-                        <select class="tagAlong" id="modifier" aria-label="Modifier choice">
+                        <select name="scale" class="tagAlong" id="modifier" aria-label="Scale choice">
                             <optgroup label="Scales">
                                 <option value="maj">Major</option>
                                 <option value="n-min">Natural Minor</option>
@@ -112,12 +112,11 @@
 
             <nav class="nav nav-menu" role="navigation">
                 <ul>
-                    <li id="install-app" class="hidden"><a href="#" onClick="installApp()">Install as an App</a></li>
+                    <li id="install-app" class="hidden"><button onClick="installApp()">Install as an App</button></li>
                 </ul>
             </nav>
 
-            <section class="scales" >
-                <div class="hrow"></div>
+            <section class="scales hdivider" >
                 <h2 id="scales">Scale</h2>
                 <details>
                     <summary>How to use</summary>
@@ -127,8 +126,7 @@
                 </table>
             </section>
 
-            <section class="chords">
-                <div class="hrow"></div>
+            <section class="chords hdivider">
                 <h2 id="chords">Chords</h2>
                 <details>
                     <summary>How to use</summary>
