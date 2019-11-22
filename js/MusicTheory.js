@@ -119,9 +119,9 @@ ScaleInfo.prototype.getDegreeFromNote= function(noteInfo){
         });
     }
 
-    var noteDiff = noteInfo.findClosestNoteInfoInList(this.majScale);
+    var noteDiff = noteInfo.findClosestNoteInfoInList(this.majScale, 1);
     if (noteDiff){
-        return noteDiff.asDegree();
+        return noteDiff.asDegree(1);
     }
 
     return "";
@@ -220,17 +220,17 @@ function NoteInfo(note, degree){
     this.degree = degree;
 }
 
-NoteInfo.prototype.findClosestNoteInfoInList = function(scaleInfo) {
+NoteInfo.prototype.findClosestNoteInfoInList = function(scaleInfo, firstMod = -1) {
     // check if note is in scale
     var inScale;
     for(var distance = 0; distance <= 3; distance++){
-        var modDist = -distance;
+        var modDist = firstMod * distance;
         inScale = getNextNote(NOTES,this.note, modDist);
         if(scaleInfo.isInScale(inScale)){
             return new NoteDiff(this, scaleInfo.getNote(inScale), modDist);
         }
         if (distance > 0 ) {
-            modDist = distance;
+            modDist = (-1 * firstMod) * distance;
             inScale = getNextNote(NOTES, this.note,modDist);
             if(scaleInfo.isInScale(inScale)){
                 return new NoteDiff(this, scaleInfo.getNote(inScale), modDist);
@@ -252,12 +252,10 @@ function NoteDiff(noteInfoA, noteInfoB, distance){
     this.distance = distance;
 }
 
-var FLAT_SHARP=[CHAR_FLAT, CHAR_SHARP, CHAR_FLAT];
-
 // invert is either 0 or 1
-NoteDiff.prototype.getDistanceAsString= function(invert = 0){
+NoteDiff.prototype.getDistanceAsString= function(invert=false){
     var result="";
-    var char = this.distance < 0 ? FLAT_SHARP[invert]: FLAT_SHARP[invert+1];
+    var char = (invert != (this.distance < 0)) ? CHAR_FLAT : CHAR_SHARP;
     for (var i = Math.abs(this.distance); i > 0; i-- ){
         result += char;
     }
@@ -266,7 +264,7 @@ NoteDiff.prototype.getDistanceAsString= function(invert = 0){
 
 NoteDiff.prototype.asDegree = function(){
     var deg = "";
-    var dist = this.getDistanceAsString(1);
+    var dist = this.getDistanceAsString(true);
     if (dist.length > 0) {
         deg += dist;
     }

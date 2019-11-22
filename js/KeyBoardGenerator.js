@@ -13,6 +13,7 @@ var SharpKeys =
     <td> </td>
     <td colspan="2" data-note="A#"></td>
     <td> </td>`;
+
 var NaturalKeys =
    `<td colspan="2" data-note="C"></td>
     <td colspan="3" data-note="D"></td>
@@ -45,11 +46,7 @@ KeyBoardGenerator.prototype.createChord = function(divId, degree){
 
 function KeyBoard(){
 }
-function showContent() {
-  var temp = document.getElementsByTagName("template")[0];
-  var clon = temp.content.cloneNode(true);
-  document.body.appendChild(clon);
-}
+
 KeyBoard.prototype.create = function(eleTable, scaleInfo, keyboardCount = 2){
     
     removeAllChildren(eleTable);
@@ -58,6 +55,9 @@ KeyBoard.prototype.create = function(eleTable, scaleInfo, keyboardCount = 2){
     var eleTBody= document.createElement("tbody");
 
     eleCaption.innerHTML = scaleInfo.name;
+    if (scaleInfo["getDegreeAsString"]){
+        eleCaption.classList.add(scaleInfo.getDegreeAsString());
+    }
 
     // build keyboard
     var sharpsRow = eleTBody.insertRow();
