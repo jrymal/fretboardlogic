@@ -15,8 +15,8 @@
         <link rel="icon" href="images/icons-192.png" sizes="192x192" />
         <link rel="icon" href="images/icons-512.png" sizes="512x512" />
 
-        <script type="text/javascript" src="js/Util.js"> </script>
-        <script type="text/javascript" src="js/MusicTheory.js"> </script>
+        <script type="text/javascript" src="js/Util.js"i async> </script>
+        <script type="text/javascript" src="js/MusicTheory.js" async> </script>
         <script type="text/javascript" src="js/FretBoardLogic.js" async> </script>
         <script type="text/javascript" src="js/FretBoardGenerator.js" async> </script>
         <script type="text/javascript" src="js/KeyBoardGenerator.js" async> </script>
@@ -28,6 +28,7 @@
         <section class="header">
             <h1>Fret Board Logic</h1>
         </section>
+        <button id="install-app" class="hidden" onClick="installApp()">Install as an App</button>
         
         <noscript>
             <h2>This site requires Javascript</h2>
@@ -105,16 +106,10 @@
                                 <option value="locrian-min">Minor Locrian</option>
                             </optgroup>
                         </select>
-                        <button class="tagAlong" id="randomizer" aria-label="Randomize the selected scale">Random Scale</button>
+                        <button class="tagAlong" id="randomizer" aria-label="Randomize the key and scale">Random Key and Scale</button>
                     </div>
                 </div>
             </section>
-
-            <nav class="nav nav-menu" role="navigation">
-                <ul>
-                    <li id="install-app" class="hidden"><button onClick="installApp()">Install as an App</button></li>
-                </ul>
-            </nav>
 
             <section class="scales hdivider" >
                 <h2 id="scales">Scale</h2>
