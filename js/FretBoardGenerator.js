@@ -25,6 +25,7 @@ FretBoardGenerator.prototype.createChord = function(divId, degree){
 
 function FretBoard(stringList){
     this.stringList = stringList;
+    this.fretData = Object.create(FRET_DATA).init(stringList);
 }
 
 FretBoard.prototype.createHorizontalFrets= function(eleTable, scaleInfo){
@@ -32,103 +33,140 @@ FretBoard.prototype.createHorizontalFrets= function(eleTable, scaleInfo){
     removeAllChildren(eleTable);
 
     var eleCaption = document.createElement("caption");
-    var eleTBody= document.createElement("tbody");
+    var tBodyFrag = document.createDocumentFragment();
+    var eleTBody = document.createElement("tbody");
+    tBodyFrag.appendChild(eleTBody);
 
     eleCaption.innerHTML = scaleInfo.name;
 
     for (var stringIdx = length(this.stringList)-1 ; stringIdx >=0 ; stringIdx--){
-        // To leverage the existing functions, we use a list of 1 for all computations
-        var currentNote = new Array(this.stringList[stringIdx]);
 
         var row = eleTBody.insertRow(length(this.stringList) - 1 - stringIdx);
         row.classList.add("frets");
     
         for (var fret = 0; fret <= SHOWN_FRETS; fret++){
-            this.configureCellForNote( row.insertCell(fret), scaleInfo, fret, currentNote[0], true);
-            currentNote = this.getNextFret(fret+1, currentNote);
+            var currentNote = this.fretData.getNote(stringIdx, fret);
+            this.configureCellForNote( row.insertCell(fret), scaleInfo, fret, currentNote, true);
         }
     }
 
 
     eleTable.appendChild(eleCaption);
-    eleTable.appendChild(eleTBody);
+    eleTable.appendChild(tBodyFrag);
 }
 
-FretBoard.prototype.createVerticalFrets= function(eleTable, scaleInfo){
+FretBoard.prototype.createVerticalFrets= function(eleTable, scaleInfo, fretData){
     
     removeAllChildren(eleTable);
 
-    var eleCaption = document.createElement("caption");
-    var eleTBody= document.createElement("tbody");
+    let eleCaption = document.createElement("caption");
+    let tBodyFrag = document.createDocumentFragment();
+    let eleTBody = document.createElement("tbody");
+    tBodyFrag.appendChild(eleTBody);
 
     eleCaption.innerHTML = scaleInfo.name;
     eleCaption.classList.add(scaleInfo.getDegreeAsString());
 
-    var currentFret = clone(this.stringList);
-    for (var fret = 0; fret <= SHOWN_FRETS; fret++){
-        var row = eleTBody.insertRow(eleTBody.childElementCount);
+    let currentFret = this.fretData.getFret(0);
+    for (let fret = 0; fret <= SHOWN_FRETS; fret++){
+        let row = eleTBody.insertRow(eleTBody.childElementCount);
         row.classList.add("frets");
     
-        for (var stringIdx = 0; stringIdx < length(currentFret); stringIdx++){
+        for (let stringIdx = 0; stringIdx < length(currentFret); stringIdx++){
             this.configureCellForNote( row.insertCell(stringIdx), scaleInfo, fret, currentFret[stringIdx]);
         }
 
         if (fret<=SHOWN_FRETS){
-            currentFret = this.getNextFret(fret+1, currentFret);
+            currentFret = this.fretData.getFret(fret+1);
         }
     }
 
 
     eleTable.appendChild(eleCaption);
-    eleTable.appendChild(eleTBody);
+    eleTable.appendChild(tBodyFrag);
 }
 
 FretBoard.prototype.configureCellForNote =function(cell, scaleInfo, fret, note, isHorizontal = false){
     
-    cell.classList.add("fret"+fret);
+    cell.classList.add("fret"+fret,"note-cell");
     
-    if (note.includes(":")){
+    if (isBlank(note)){
         return;
     }
 
     var ni = scaleInfo.getNote(note);
 
     var eleNote = document.createElement("p");
-    eleNote.classList.add("note");
+    var classesToAdd = [];
+    classesToAdd.push("note");
     if (isHorizontal){
-        eleNote.classList.add("hnote");
+        classesToAdd.push("hnote");
     }
     if (ni){
-        eleNote.classList.add("highlighted-note");
-        eleNote.classList.add(ni.getDegreeAsString());
-        eleNote.innerHTML=getDisplayNote(note);
+        classesToAdd.push("highlighted-note");
+        classesToAdd.push(ni.getDegreeAsString());
+        eleNote.innerText=getDisplayNote(note);
     }
     
-    
+    eleNote.classList.add.apply(eleNote.classList, classesToAdd);
     cell.appendChild(eleNote);
-    cell.classList.add("note-cell");
 }
 
-FretBoard.prototype.getNextFret=function  (fret, fretList){
-    var array = new Array();
+const FRET_DATA={
+    init: function(zeroFretList, fretCount=15){
+        this.fretListOfList = this.populateFretArray(zeroFretList, fretCount);
+        return this;
+    },
+    getFret: function(fret){
+        return this.fretListOfList[fret];
+    },
+    getNote: function(stringIdx, fret){
+        return this.fretListOfList[fret][stringIdx];
+    },
+    populateFretArray: function(zeroFret,fretCount){
+        let fretList = new Array();
+        let currentFret = zeroFret;
 
-    fretList.forEach(
-        function(noteStr){
-            var splitNoteArray = noteStr.split(":");
-            var note = splitNoteArray[0];
-            var startFret = splitNoteArray[1];
-       
-            if (!isBlank(startFret)){
-                if (fret < startFret){
-                    array.push(note+":"+startFret);
-                } else {
-                    array.push(note);
-                }
-            } else {
-                array.push(getNextNote(NOTES, note, 1));
-            }
+        for(let fret = 0; fret <= fretCount; fret++){
+            fretList.push(this.buildDisplayFret(currentFret));
+            currentFret = this.getNextFret(currentFret, fret);
         }
-    );
+        return fretList;
+    },
+    buildDisplayFret(fretList){
+        let fret = new Array();
+        fretList.forEach(
+            function(noteStr){
+                if (noteStr.includes(":")){
+                    fret.push("");
+                } else {
+                    fret.push(noteStr);
+                }
+            }
+        );
+        return fret;
+    },
+    getNextFret: function(fretList, fretIdx){
+        let fret = new Array();
 
-    return array;
-}
+        fretList.forEach(
+            function(noteStr){
+                var splitNoteArray = noteStr.split(":");
+                var note = splitNoteArray[0];
+                var startFret = splitNoteArray[1];
+           
+                if (!isBlank(startFret)){
+                    if (fretIdx < startFret-1){
+                        fret.push(noteStr);
+                    } else {
+                        fret.push(note);
+                    }
+                } else {
+                    fret.push(getNextNote(NOTES, note, 1));
+                }
+            }
+        );
+
+        return fret;
+    },
+};

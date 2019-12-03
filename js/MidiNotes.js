@@ -70,9 +70,6 @@ var EnvelopeGenerator = {
         this.param.setValueAtTime(0, now);
         this.param.exponentialRampToValueAtTime(1, now + this.attackTime);
         this.param.linearRampToValueAtTime(0, now + this.attackTime + this.releaseTime);
-        //this.param.exponentialRampToValueAtTime(0, now + this.attackTime + this.releaseTime);
-        //this.param.linearRampToValueAtTime(1, now + this.attackTime);
-        //this.param.linearRampToValueAtTime(0, now + this.attackTime + this.releaseTime);
     },
 
     connect: function(param) {
@@ -103,29 +100,70 @@ var VCA = {
     },
 };
 
+var VOICE = {
+    init: function(context){
+    
+        let vco = Object.create(VCO).init(context);
+        let vca = Object.create(VCA).init(context);
+        let envelope = Object.create(EnvelopeGenerator).init(context);
 
-function MidiPlayer(){
+        vco.connect(vca);
+        envelope.connect(vca.amplitude);
+        vca.connect(context.destination);
+        
+
+        this.audioContext = context;
+        this.vco = vco;
+        this.vca = vca;
+        this.envelope = envelope;
+        
+        return this;
+    },
+
+    playFreq: function(freq) {
+        this.vca.setVolume(0);
+        this.vco.start();
+
+        this.vco.setFrequency(freq);
+        this.envelope.trigger();
+    },
+    stop: function(){
+        this.vca.setVolume(0);
+    }
+   
+};
+
+var VOICE_LIST = {
+    init: function(context, count){
+        this.voiceList = [];
+        this.lastPlayed = -1;
+
+        for(let i = 0; i < count; i++){
+            this.voiceList.push(Object.create(VOICE).init(context));
+        }
+
+        return this;
+    },
+    playFreq: function(freq) {
+        let curVoice= (this.lastPlayed + 1) % this.voiceList.length;
+        this.voiceList[curVoice].playFreq(freq);
+        this.lastPlayed = curVoice;
+    },
+    stop: function(){
+        for(let i = 0; i < this.voiceList.length; i++){
+            this.voiceList[i].stop();
+        }
+    }
+ 
+};
+
+function MidiPlayer(voiceCount=1){
     let context =  new (window.AudioContext || window.webkitAudioContext);
-    
-    let vco = Object.create(VCO).init(context);
-    let vca = Object.create(VCA).init(context);
-    let envelope = Object.create(EnvelopeGenerator).init(context);
-
-    vco.connect(vca);
-    envelope.connect(vca.amplitude);
-    vca.connect(context.destination);
-    
-
-    this.audioContext = context;
-    this.vco = vco;
-    this.vca = vca;
-    this.envelope = envelope;
+    this.voice = Object.create(VOICE_LIST).init(context, voiceCount);
     this.space = 200;
 }
 
 MidiPlayer.prototype.playNote = function(noteList, cnt=1) {
-    this.vca.setVolume(0);
-    this.vco.start();
 
     if (!Array.isArray(noteList)){
         noteList = [ noteList ];
@@ -140,28 +178,21 @@ MidiPlayer.prototype.playNote = function(noteList, cnt=1) {
         );
     }
 
-    var vco = this.vco;
-    var env = this.envelope;
-    
     this.timerId = setInterval(this.playNoteList, this.space, this, fullNoteList);
 }
 
 MidiPlayer.prototype.playNoteList = function(midiPlayer, noteList) {
     let note = noteList.shift();
     if (note){
-        midiPlayer.playFreq(midiPlayer.noteFreq(note));
+        midiPlayer.voice.playFreq(midiPlayer.noteFreq(note));
     } else {
         clearInterval(midiPlayer.timerId);
     }
 }
 
-MidiPlayer.prototype.playFreq = function(freq) {
-    this.vco.setFrequency(freq);
-    this.envelope.trigger();
-}
 
 MidiPlayer.prototype.stop = function(oscMatch){
-    this.vca.setVolume(0);
+    this.voice.stop();
 }
 
 MidiPlayer.prototype.setSpacing = function(space){
