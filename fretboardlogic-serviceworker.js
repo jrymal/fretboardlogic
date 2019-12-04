@@ -13,12 +13,18 @@ self.addEventListener('install', function(event) {
                 'css/core.css',
                 'css/fretboardlogic.css',
                 
+                'images/icons-70.png',
+                'images/icons-80.png',
+                'images/icons-150.png',
                 'images/icons-192.png',
+                'images/icons-310x150.png',
                 'images/icons-512.png',
                 
                 'js/FretBoardGenerator.js',
+                'js/KeyBoardGenerator.js',
                 'js/FretBoardLogic.js',
                 'js/MusicTheory.js',
+                'js/MidiNotes.js',
                 'js/Util.js',
             ]);
         })

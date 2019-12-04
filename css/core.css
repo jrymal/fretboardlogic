@@ -11,8 +11,6 @@
     --color-wizard-background: #f1f1f1;
     --color-wizard-border: #ccc;
     
-    --color-header-bkgnd: #612525;
-    --color-header-fgnd: var(--color-primary-background);
 }
 
 body {
@@ -139,18 +137,6 @@ h1 {
     padding: .3em;
     margin: 0;
 }
-.header {
-    background: var(--color-header-bkgnd);
-    color: var(--color-header-fgnd);
-    
-}
-
-.header
-
-h2 {
-    color: var(--color-header-bkgnd);
-}
-
 section.hdivider{
     border-top: solid 3px var(--color-smoke);
     margin: 1em 0;
