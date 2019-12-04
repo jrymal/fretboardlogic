@@ -1,6 +1,6 @@
 'use strict'
 
-var VCO = {
+const VCO = {
     init: function(context){
         this.context = context;
         
@@ -47,7 +47,7 @@ var VCO = {
     },
 };
 
-var EnvelopeGenerator = {
+const EnvelopeGenerator = {
     init: function(context) {
         this.context = context;
         this.attackTime = 0.005;
@@ -77,7 +77,7 @@ var EnvelopeGenerator = {
     },
 };
 
-var VCA = {
+const VCA = {
     init: function(context) {
         this.gain = context.createGain();
         this.gain.gain.value = 1;
@@ -100,7 +100,7 @@ var VCA = {
     },
 };
 
-var VOICE = {
+const VOICE = {
     init: function(context){
     
         let vco = Object.create(VCO).init(context);
@@ -133,7 +133,7 @@ var VOICE = {
    
 };
 
-var VOICE_LIST = {
+const VOICE_LIST = {
     init: function(context, count){
         this.voiceList = [];
         this.lastPlayed = -1;
@@ -157,77 +157,80 @@ var VOICE_LIST = {
  
 };
 
-function MidiPlayer(voiceCount=1){
-    let context =  new (window.AudioContext || window.webkitAudioContext);
-    this.voice = Object.create(VOICE_LIST).init(context, voiceCount);
-    this.space = 200;
-}
+const MIDI_PLAYER = {
+    init: function(voiceCount=1){
+        const BASELINE_IDX = 9;
+        const BASELINE_NOTE = "A";
+        const BASELINE_OCT = 4;
+        const BASELINE_FREQ = 440;
+        
+        let context =  new (window.AudioContext || window.webkitAudioContext);
+        this.voice = Object.create(VOICE_LIST).init(context, voiceCount);
+        this.space = 200;
+        return this;
+    },
 
-MidiPlayer.prototype.playNote = function(noteList, cnt=1) {
+    playNote:function(noteList, cnt=1) {
 
-    if (!Array.isArray(noteList)){
-        noteList = [ noteList ];
-    }
+        if (!Array.isArray(noteList)){
+            noteList = [ noteList ];
+        }
 
-    let fullNoteList = [];
-    for( let i = cnt; i > 0; i--){
-        noteList.forEach(
-            note => {
-                fullNoteList.push(note);
-            }
-        );
-    }
+        let fullNoteList = [];
+        for( let i = cnt; i > 0; i--){
+            noteList.forEach(
+                note => {
+                    fullNoteList.push(note);
+                }
+            );
+        }
 
-    this.timerId = setInterval(this.playNoteList, this.space, this, fullNoteList);
-}
+        this.timerId = setInterval(this.playNoteList, this.space, this, fullNoteList);
+    },
 
-MidiPlayer.prototype.playNoteList = function(midiPlayer, noteList) {
-    let note = noteList.shift();
-    if (note){
-        midiPlayer.voice.playFreq(midiPlayer.noteFreq(note));
-    } else {
-        clearInterval(midiPlayer.timerId);
-    }
-}
+   playNoteList : function(midiPlayer, noteList) {
+        let note = noteList.shift();
+        if (note){
+            midiPlayer.voice.playFreq(midiPlayer.noteFreq(note));
+        } else {
+            clearInterval(midiPlayer.timerId);
+        }
+    },
+
+    stop:function(oscMatch){
+        this.voice.stop();
+    },
+
+    setSpacing : function(space){
+        this.space = space;
+    },
 
 
-MidiPlayer.prototype.stop = function(oscMatch){
-    this.voice.stop();
-}
+    noteFreq : function(note){
+        let dist = this.findDistanceOfNote(note);
+        let freq = BASELINE_FREQ * Math.pow(2, dist/12);
+        return freq;
+    },
 
-MidiPlayer.prototype.setSpacing = function(space){
-    this.space = space;
-}
+    findDistanceOfNote : function(note){
+        let split = note.split(':');
+        let reqNote = split[0];
+        let reqOct = BASELINE_OCT;
 
-const BASELINE_IDX = 9;
-const BASELINE_NOTE = "A";
-const BASELINE_OCT = 4;
-const BASELINE_FREQ = 440;
+        if (split.length > 1){
+            reqOct = split[1];
+        }
 
-MidiPlayer.prototype.noteFreq = function(note){
-    let dist = this.findDistanceOfNote(note);
-    let freq = BASELINE_FREQ * Math.pow(2, dist/12);
-    return freq;
-}
+        // this unfortunately for this pass is dependent on MusicTheory.js
+        let idxReqNote = NOTES.indexOf(reqNote);
 
-MidiPlayer.prototype.findDistanceOfNote = function(note){
-    let split = note.split(':');
-    let reqNote = split[0];
-    let reqOct = BASELINE_OCT;
+        if (idxReqNote == -1){
+            console.log("Note not recognized:"+note);
+            return null;
+        }
 
-    if (split.length > 1){
-        reqOct = split[1];
-    }
-
-    // this unfortunately for this pass is dependent on MusicTheory.js
-    let idxReqNote = NOTES.indexOf(reqNote);
-
-    if (idxReqNote == -1){
-        console.log("Note not recognized:"+note);
-        return null;
-    }
-
-    let octDist = reqOct - BASELINE_OCT; 
-    let noteDist = idxReqNote - BASELINE_IDX;
-    return noteDist + (octDist * 12);
-}
+        let octDist = reqOct - BASELINE_OCT; 
+        let noteDist = idxReqNote - BASELINE_IDX;
+        return noteDist + (octDist * 12);
+    },
+};

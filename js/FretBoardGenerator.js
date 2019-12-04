@@ -1,120 +1,127 @@
 'use strict';
 
-var SHOWN_FRETS=15;
+const SHOWN_FRETS=15;
 
-function FretBoardGenerator(stringList, key, modifiers){
-    this.fretboard = new FretBoard(stringList);
-    this.scaleinfo = new ScaleInfo(key, modifiers)
-}
+const FRETBOARD_GENERATOR={
+    init: function(stringList, key, modifiers){
+        this.fretboard = Object.create(FRETBOARD).init(stringList);
+        this.scaleinfo = Object.create(SCALE_INFO).init(key, modifiers)
+        return this;
+    },
 
-// Takes in a table to update to look appropriate for the theory of the scale
-FretBoardGenerator.prototype.createScale = function(element){
-    this.fretboard.createHorizontalFrets(element, this.scaleinfo);
-    return this;
-}
+    // Takes in a table to update to look appropriate for the theory of the scale
+    createScale: function(element){
+        this.fretboard.createHorizontalFrets(element, this.scaleinfo);
+        return this;
+    },
 
-// Takes in a table to update to look appropriate for the theory of the chord (identified by the degree on the scale)
-FretBoardGenerator.prototype.createChord = function(divId, degree){
-    var chordInfo = this.scaleinfo.getChord(degree);
-    if ( chordInfo ){
-        this.fretboard.createVerticalFrets($(divId+"-table"), chordInfo);
-    }
-    show($(divId), exists(chordInfo));
-    return this;
-}
-
-function FretBoard(stringList){
-    this.stringList = stringList;
-    this.fretData = Object.create(FRET_DATA).init(stringList);
-}
-
-FretBoard.prototype.createHorizontalFrets= function(eleTable, scaleInfo){
-    
-    removeAllChildren(eleTable);
-
-    var eleCaption = document.createElement("caption");
-    var tBodyFrag = document.createDocumentFragment();
-    var eleTBody = document.createElement("tbody");
-    tBodyFrag.appendChild(eleTBody);
-
-    eleCaption.innerHTML = scaleInfo.name;
-
-    for (var stringIdx = length(this.stringList)-1 ; stringIdx >=0 ; stringIdx--){
-
-        var row = eleTBody.insertRow(length(this.stringList) - 1 - stringIdx);
-        row.classList.add("frets");
-    
-        for (var fret = 0; fret <= SHOWN_FRETS; fret++){
-            var currentNote = this.fretData.getNote(stringIdx, fret);
-            this.configureCellForNote( row.insertCell(fret), scaleInfo, fret, currentNote, true);
+    // Takes in a table to update to look appropriate for the theory of the chord (identified by the degree on the scale)
+    createChord: function(divId, degree){
+        let chordInfo = this.scaleinfo.getChord(degree);
+        if ( chordInfo ){
+            this.fretboard.createVerticalFrets($(divId+"-table"), chordInfo);
         }
+        show($(divId), exists(chordInfo));
+        return this;
     }
+};
 
-
-    eleTable.appendChild(eleCaption);
-    eleTable.appendChild(tBodyFrag);
-}
-
-FretBoard.prototype.createVerticalFrets= function(eleTable, scaleInfo, fretData){
+const FRETBOARD = {
+    init: function(stringList){
+        this.stringList = stringList;
+        this.fretData = Object.create(FRET_DATA).init(stringList, SHOWN_FRETS);
+        return this;
+    },
     
-    removeAllChildren(eleTable);
+    createHorizontalFrets: function(eleTable, scaleInfo){
+        
+        removeAllChildren(eleTable);
 
-    let eleCaption = document.createElement("caption");
-    let tBodyFrag = document.createDocumentFragment();
-    let eleTBody = document.createElement("tbody");
-    tBodyFrag.appendChild(eleTBody);
+        let eleCaption = document.createElement("caption");
+        let tBodyFrag = document.createDocumentFragment();
+        let eleTBody = document.createElement("tbody");
+        tBodyFrag.appendChild(eleTBody);
 
-    eleCaption.innerHTML = scaleInfo.name;
-    eleCaption.classList.add(scaleInfo.getDegreeAsString());
+        eleCaption.innerHTML = scaleInfo.name;
 
-    let currentFret = this.fretData.getFret(0);
-    for (let fret = 0; fret <= SHOWN_FRETS; fret++){
-        let row = eleTBody.insertRow(eleTBody.childElementCount);
-        row.classList.add("frets");
-    
-        for (let stringIdx = 0; stringIdx < length(currentFret); stringIdx++){
-            this.configureCellForNote( row.insertCell(stringIdx), scaleInfo, fret, currentFret[stringIdx]);
+        for (let stringIdx = length(this.stringList)-1 ; stringIdx >=0 ; stringIdx--){
+
+            let row = eleTBody.insertRow(length(this.stringList) - 1 - stringIdx);
+            row.classList.add("frets");
+        
+            for (let fret = 0; fret <= this.fretData.maxFrets; fret++){
+                let currentNote = this.fretData.getNote(stringIdx, fret);
+                this.configureCellForNote( row.insertCell(fret), scaleInfo, fret, currentNote, true);
+            }
         }
 
-        if (fret<=SHOWN_FRETS){
-            currentFret = this.fretData.getFret(fret+1);
+
+        eleTable.appendChild(eleCaption);
+        eleTable.appendChild(tBodyFrag);
+    },
+    
+    createVerticalFrets: function(eleTable, scaleInfo, fretData){
+        
+        removeAllChildren(eleTable);
+
+        let eleCaption = document.createElement("caption");
+        let tBodyFrag = document.createDocumentFragment();
+        let eleTBody = document.createElement("tbody");
+        tBodyFrag.appendChild(eleTBody);
+
+        eleCaption.innerHTML = scaleInfo.name;
+        eleCaption.classList.add(scaleInfo.getDegreeAsString());
+
+        let currentFret = this.fretData.getFret(0);
+        for (let fret = 0; fret <= this.fretData.maxFrets; fret++){
+            let row = eleTBody.insertRow(eleTBody.childElementCount);
+            row.classList.add("frets");
+        
+            for (let stringIdx = 0; stringIdx < length(currentFret); stringIdx++){
+                this.configureCellForNote( row.insertCell(stringIdx), scaleInfo, fret, currentFret[stringIdx]);
+            }
+
+            if (fret<=this.fretData.maxFrets){
+                currentFret = this.fretData.getFret(fret+1);
+            }
         }
-    }
 
 
-    eleTable.appendChild(eleCaption);
-    eleTable.appendChild(tBodyFrag);
-}
+        eleTable.appendChild(eleCaption);
+        eleTable.appendChild(tBodyFrag);
+    },
 
-FretBoard.prototype.configureCellForNote =function(cell, scaleInfo, fret, note, isHorizontal = false){
-    
-    cell.classList.add("fret"+fret,"note-cell");
-    
-    if (isBlank(note)){
-        return;
-    }
+    configureCellForNote: function(cell, scaleInfo, fret, note, isHorizontal = false){
+        
+        cell.classList.add("fret"+fret,"note-cell");
+        
+        if (isBlank(note)){
+            return;
+        }
 
-    var ni = scaleInfo.getNote(note);
+        let ni = scaleInfo.getNote(note);
 
-    var eleNote = document.createElement("p");
-    var classesToAdd = [];
-    classesToAdd.push("note");
-    if (isHorizontal){
-        classesToAdd.push("hnote");
-    }
-    if (ni){
-        classesToAdd.push("highlighted-note");
-        classesToAdd.push(ni.getDegreeAsString());
-        eleNote.innerText=getDisplayNote(note);
-    }
-    
-    eleNote.classList.add.apply(eleNote.classList, classesToAdd);
-    cell.appendChild(eleNote);
-}
+        let eleNote = document.createElement("p");
+        let classesToAdd = [];
+        classesToAdd.push("note");
+        if (isHorizontal){
+            classesToAdd.push("hnote");
+        }
+        if (ni){
+            classesToAdd.push("highlighted-note");
+            classesToAdd.push(ni.getDegreeAsString());
+            eleNote.innerText=getDisplayNote(note);
+        }
+        
+        eleNote.classList.add.apply(eleNote.classList, classesToAdd);
+        cell.appendChild(eleNote);
+    },
+};
 
 const FRET_DATA={
-    init: function(zeroFretList, fretCount=15){
+    init: function(zeroFretList, fretCount){
         this.fretListOfList = this.populateFretArray(zeroFretList, fretCount);
+        this.maxFrets = fretCount;
         return this;
     },
     getFret: function(fret){
@@ -151,9 +158,9 @@ const FRET_DATA={
 
         fretList.forEach(
             function(noteStr){
-                var splitNoteArray = noteStr.split(":");
-                var note = splitNoteArray[0];
-                var startFret = splitNoteArray[1];
+                let splitNoteArray = noteStr.split(":");
+                let note = splitNoteArray[0];
+                let startFret = splitNoteArray[1];
            
                 if (!isBlank(startFret)){
                     if (fretIdx < startFret-1){

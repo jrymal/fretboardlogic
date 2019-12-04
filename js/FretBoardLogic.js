@@ -1,6 +1,6 @@
 'use strict';
 
-var INSTRUMENTS = {
+const INSTRUMENTS = {
     "banjo5":["G:5", "D", "G", "B", "D"],
     "bass4":["E", "A", "D", "G"],
     "bass5":["B", "E", "A", "D", "G"],
@@ -11,10 +11,9 @@ var INSTRUMENTS = {
     "mandolin":["G", "D", "A", "E"],
 };
 
-var SCALES = {
+const SCALES = {
     /*
      * notes - list of degrees in scale; acts as a filter for the degrees in the scale
-     * mods - list of modifications to the sccale; display only
      * intervals - the intervals for each note in sequence in the scale
      */
     "maj":{
@@ -107,106 +106,111 @@ var SCALES = {
     },
 };
 
-function FretBoardApp(){
-    window.onbeforeinstallprompt = function(event){
-        // Prevent Chrome <= 67 from automatically showing the prompt
-        event.preventDefault();
-        // Stash the event so it can be triggered later.
-        app.installPromptEvent = event;
+const FRETBOARD_APP = {
+    init: function(){
+        this.setState(history.state);
+        this.addUiListeners();
+        this.updateAll();
+        
+        return this;
+    },
 
-        show($('install-app'), true);
-    };
-}
+    setInstallPromptHandler: function(){
+        window.onbeforeinstallprompt = function(event){
+            // Prevent Chrome <= 67 from automatically showing the prompt
+            event.preventDefault();
+            // Stash the event so it can be triggered later.
+            app.installPromptEvent = event;
 
-FretBoardApp.prototype.addUiListeners = function(){
-    $("instrument").addEventListener("change", this.updateAll);
-    $("key").addEventListener("change", this.updateAll);
-    $("modifier").addEventListener("change", this.updateAll);
-    $("randomizer").addEventListener("click", randomizeScale);
-}
+            show($('install-app'), true);
+        };
+        return this;
+    },
 
-FretBoardApp.prototype.setState = function(state){
-    if (state){
-        if (state["instrument"]){
-            $("instrument").value = state["instrument"];
+    addUiListeners: function(){
+        $("instrument").addEventListener("change", this.updateAll);
+        $("key").addEventListener("change", this.updateAll);
+        $("modifier").addEventListener("change", this.updateAll);
+        $("randomizer").addEventListener("click", randomizeScale);
+    },
+
+    setState: function(state){
+        if (state){
+            if (state["instrument"]){
+                $("instrument").value = state["instrument"];
+            }
+            if (state["key"]){
+                $("key").value = state["key"];
+            }
+            if (state["modifier"]){
+                $("modifier").value = state["modifier"];
+            }
         }
-        if (state["key"]){
-            $("key").value = state["key"];
-        }
-        if (state["modifier"]){
-            $("modifier").value = state["modifier"];
-        }
-    }
-}
+    },
 
-FretBoardApp.prototype.getState = function(){
-    return {
-        "instrument":$("instrument").value,
-        "key":$("key").value,
-        "modifier":$("modifier").value
-    };
-}
+    getState: function(){
+        return {
+            "instrument":$("instrument").value,
+            "key":$("key").value,
+            "modifier":$("modifier").value
+        };
+    },
 
-FretBoardApp.prototype.init = function(){
-    this.setState(history.state);
-    this.addUiListeners();
-    this.updateAll();
-}
+    installApp: function(){
+        show($('install-app'), false);
+      
+        // Show the modal add to home screen dialog
+        this.installPromptEvent.prompt();
+        // Wait for the user to respond to the prompt
+        this.installPromptEvent.userChoice.then((choice) => {
+            if (choice.outcome === 'accepted') {
+              console.debug('User accepted the A2HS prompt');
+            } else {
+              console.debug('User dismissed the A2HS prompt');
+            }
+            // Clear the saved prompt since it can't be used again
+            this.installPromptEvent = null;
+        });
+    },
 
-FretBoardApp.prototype.installApp = function(){
-    show($('install-app'), false);
-  
-    // Show the modal add to home screen dialog
-    this.installPromptEvent.prompt();
-    // Wait for the user to respond to the prompt
-    this.installPromptEvent.userChoice.then((choice) => {
-        if (choice.outcome === 'accepted') {
-          console.debug('User accepted the A2HS prompt');
+    updateAll: function(){
+        history.replaceState( app.getState(), window.title, window.location);
+
+        let mod = SCALES[getSelectedValue($("modifier"))];
+        let key = getSelectedValue($("key"));
+
+        let gen
+        let inst = getSelectedValue($("instrument"));
+        if (inst === "piano") {
+            gen = Object.create(KEYBOARD_GENERATOR).init(key, mod);
         } else {
-          console.debug('User dismissed the A2HS prompt');
+            let stringList = INSTRUMENTS[inst];
+            gen = Object.create(FRETBOARD_GENERATOR).init(stringList, key, mod);
         }
-        // Clear the saved prompt since it can't be used again
-        this.installPromptEvent = null;
-    });
-}
 
-FretBoardApp.prototype.updateAll = function(){
-    history.replaceState( app.getState(), window.title, window.location);
+        gen
+        .createScale($("scale-table"))
+        .createChord("chord-root", 1)
+        .createChord("chord-second", 2)
+        .createChord("chord-third", 3)
+        .createChord("chord-fourth", 4)
+        .createChord("chord-fifth", 5)
+        .createChord("chord-sixth", 6)
+        .createChord("chord-seventh", 7)
+        .createChord("chord-eighth", 8)
+        .createChord("chord-ninth", 9)
+        ;
+    },
 
-    var mod = SCALES[getSelectedValue($("modifier"))];
-    var key = getSelectedValue($("key"));
-
-    var gen
-    var inst = getSelectedValue($("instrument"));
-    if (inst === "piano") {
-        gen = new KeyBoardGenerator(key, mod);
-    } else {
-        var stringList = INSTRUMENTS[inst];
-        gen = new FretBoardGenerator(stringList, key, mod);
-    }
-
-    gen
-    .createScale($("scale-table"))
-    .createChord("chord-root", 1)
-    .createChord("chord-second", 2)
-    .createChord("chord-third", 3)
-    .createChord("chord-fourth", 4)
-    .createChord("chord-fifth", 5)
-    .createChord("chord-sixth", 6)
-    .createChord("chord-seventh", 7)
-    .createChord("chord-eighth", 8)
-    .createChord("chord-ninth", 9)
-    ;
-}
-
-FretBoardApp.prototype.randomizeScale = function(){
-    randomizeList("modifier");
-    randomizeList("key");
-    this.updateAll();
-}
+    randomizeScale: function(){
+        randomizeList("modifier");
+        randomizeList("key");
+        this.updateAll();
+    },
+};
 
 /* HTML functions */
-let app = new FretBoardApp();
+const app = Object.create(FRETBOARD_APP).setInstallPromptHandler();
 
 function init(){
     app.init();

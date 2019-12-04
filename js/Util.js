@@ -73,7 +73,7 @@ function removeAllChildren(element){
 }
 
 function safeRotateLeft(inList, firstNodeIdx){
-    var list = clone(inList);
+    let list = clone(inList);
     firstNodeIdx-= list.length * Math.floor(firstNodeIdx / list.length);
     list.push.apply(list, list.splice(0, firstNodeIdx));
     return list;
@@ -89,8 +89,8 @@ function getDataAttribute(element, dataName, defaultValue){
 }
 
 function randomizeList(selectEleId){
-    var selectEle = $(selectEleId);
-    var nodeList = selectEle.querySelectorAll("option");
-    var selectedIdx = Math.floor(Math.random() * Math.floor(nodeList.length));
+    let selectEle = $(selectEleId);
+    let nodeList = selectEle.querySelectorAll("option");
+    let selectedIdx = Math.floor(Math.random() * Math.floor(nodeList.length));
     $(selectEleId).value = nodeList[selectedIdx].value;
 }

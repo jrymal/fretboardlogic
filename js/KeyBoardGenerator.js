@@ -1,110 +1,119 @@
 'use strict';
 
-var SharpKeys =
-   `<td></td>
-    <td colspan="2" data-note="C#"></td>
-    <td> </td>
-    <td colspan="2" data-note="D#"></td>
-    <td>  </td>
-    <td>   </td>
-    <td colspan="2" data-note="F#"></td>
-    <td> </td>
-    <td colspan="2" data-note="G#"></td>
-    <td> </td>
-    <td colspan="2" data-note="A#"></td>
-    <td> </td>`;
+const SharpKeys =
+   `<td class="key"></td>
+    <td class="key" colspan="2" data-note="C#"></td>
+    <td class="key"> </td>
+    <td class="key" colspan="2" data-note="D#"></td>
+    <td class="key">  </td>
+    <td class="key">   </td>
+    <td class="key" colspan="2" data-note="F#"></td>
+    <td class="key"> </td>
+    <td class="key" colspan="2" data-note="G#"></td>
+    <td class="key"> </td>
+    <td class="key" colspan="2" data-note="A#"></td>
+    <td class="key"> </td>`;
 
-var NaturalKeys =
-   `<td colspan="2" data-note="C"></td>
-    <td colspan="3" data-note="D"></td>
-    <td colspan="2" data-note="E"></td>
-    <td colspan="2" data-note="F"></td>
-    <td colspan="3" data-note="G"></td>
-    <td colspan="3" data-note="A"></td>
-    <td colspan="2" data-note="B"></td>`;
+const NaturalKeys =
+   `<td class="key" colspan="2" data-note="C"></td>
+    <td class="key" colspan="3" data-note="D"></td>
+    <td class="key" colspan="2" data-note="E"></td>
+    <td class="key" colspan="2" data-note="F"></td>
+    <td class="key" colspan="3" data-note="G"></td>
+    <td class="key" colspan="3" data-note="A"></td>
+    <td class="key" colspan="2" data-note="B"></td>`;
 
-function KeyBoardGenerator(key, modifiers){
-    this.keyboard = new KeyBoard();
-    this.scaleinfo = new ScaleInfo(key, modifiers)
-}
+const MAX_BOARD_CNT = 2;
 
-// Takes in a table to update to look appropriate for the theory of the scale
-KeyBoardGenerator.prototype.createScale = function(element){
-    this.keyboard.create(element, this.scaleinfo);
-    return this;
-}
+const KEYBOARD_GENERATOR = {
+    init: function(key, modifiers){
+        this.keyboard = Object.create(KEYBOARD);
+        this.scaleinfo = Object.create(SCALE_INFO).init(key, modifiers)
+        return this;
+    },
 
-// Takes in a table to update to look appropriate for the theory of the chord (identified by the degree on the scale)
-KeyBoardGenerator.prototype.createChord = function(divId, degree){
-    var chordInfo = this.scaleinfo.getChord(degree);
-    if ( chordInfo ){
-        this.keyboard.create($(divId+"-table"), chordInfo);
-    }
-    show($(divId), exists(chordInfo));
-    return this;
-}
+    // Takes in a table to update to look appropriate for the theory of the scale
+    createScale: function(element){
+        this.keyboard.create(element, this.scaleinfo, MAX_BOARD_CNT);
+        return this;
+    },
 
-function KeyBoard(){
-}
+    // Takes in a table to update to look appropriate for the theory of the chord (identified by the degree on the scale)
+    createChord: function(divId, degree){
+        let chordInfo = this.scaleinfo.getChord(degree);
+        if ( chordInfo ){
+            this.keyboard.create($(divId+"-table"), chordInfo, MAX_BOARD_CNT);
+        }
+        show($(divId), exists(chordInfo));
+        return this;
+    },
 
-KeyBoard.prototype.create = function(eleTable, scaleInfo, keyboardCount = 2){
-    
-    removeAllChildren(eleTable);
+};
 
-    var eleCaption = document.createElement("caption");
-    var eleTBody= document.createElement("tbody");
+const KEYBOARD = {
+    create: function(eleTable, scaleInfo, keyboardCount){
+        
+        removeAllChildren(eleTable);
 
-    eleCaption.innerHTML = scaleInfo.name;
-    if (scaleInfo["getDegreeAsString"]){
-        eleCaption.classList.add(scaleInfo.getDegreeAsString());
-    }
+        let eleCaption = document.createElement("caption");
+        let tBodyFrag = document.createDocumentFragment();
+        let eleTBody = document.createElement("tbody");
+        tBodyFrag.appendChild(eleTBody);
 
-    // build keyboard
-    var sharpsRow = eleTBody.insertRow();
-    var naturalRow = eleTBody.insertRow();
+        eleCaption.innerHTML = scaleInfo.name;
+        if (scaleInfo["getDegreeAsString"]){
+            eleCaption.classList.add(scaleInfo.getDegreeAsString());
+        }
 
-    var sharpKeys = $("SharpKeys"); 
-    var naturalKeys = $("NaturalKeys"); 
+        // build keyboard
+        let sharpKeys = SharpKeys;
+        let naturalKeys = NaturalKeys;
 
-    for (var repeats = 0; repeats < keyboardCount ; repeats++){
-        sharpsRow.innerHTML += SharpKeys;
-        naturalRow.innerHTML += NaturalKeys;
-    }
-    
-    [ sharpsRow , naturalRow].forEach(
-        row => {
-            row.classList.add( (row == naturalRow) ? "natural":"sharp");
-            for( let i = 0, cell; cell = row.cells[i]; i++){
-                cell.classList.add("key");
-                
-                let currentNote = getDataAttribute(cell, "note");
-                if (!isBlank(currentNote)){
-                    this.configureCellForNote( cell, scaleInfo, currentNote);
+        for (let repeats = 1; repeats < keyboardCount ; repeats++){
+            sharpKeys = sharpKeys.concat(SharpKeys);
+            naturalKeys = naturalKeys.concat(NaturalKeys);
+        }
+        
+        let sharpsRow = eleTBody.insertRow();
+        let naturalRow = eleTBody.insertRow();
+        
+        sharpsRow.innerHTML = sharpKeys;
+        naturalRow.innerHTML = naturalKeys;
+        
+        [ sharpsRow , naturalRow].forEach(
+            row => {
+                row.classList.add( (row == naturalRow) ? "natural":"sharp");
+                for( let i = 0, cell; cell = row.cells[i]; i++){
+                    let currentNote = getDataAttribute(cell, "note");
+                    if (!isBlank(currentNote)){
+                        this.configureCellForNote( cell, scaleInfo, currentNote);
+                    }
                 }
             }
+        );
+
+        eleTable.appendChild(eleCaption);
+        eleTable.appendChild(tBodyFrag);
+    },
+
+    configureCellForNote: function(cell, scaleInfo, note){
+
+        let ni = scaleInfo.getNote(note);
+
+        let eleNote = document.createElement("p");
+        let classesToAdd = [];
+        classesToAdd.push("note");
+        
+        if (ni){
+            classesToAdd.push("highlighted-note");
+            classesToAdd.push(ni.getDegreeAsString());
+            eleNote.innerText=getDisplayNote(note);
         }
-    );
-
-    eleTable.appendChild(eleCaption);
-    eleTable.appendChild(eleTBody);
-}
-
-KeyBoard.prototype.configureCellForNote =function(cell, scaleInfo, note){
-
-    var ni = scaleInfo.getNote(note);
-
-    var eleNote = document.createElement("p");
-    eleNote.classList.add("note");
-    
-    if (ni){
-        eleNote.classList.add("highlighted-note");
-        eleNote.classList.add(ni.getDegreeAsString());
-        eleNote.innerHTML=getDisplayNote(note);
+        
+        eleNote.classList.add.apply(eleNote.classList, classesToAdd);
+        cell.classList.add("note-cell");
+        cell.appendChild(eleNote);
     }
-    
-    cell.appendChild(eleNote);
-    cell.classList.add("note-cell");
-}
 
-
+};
 
