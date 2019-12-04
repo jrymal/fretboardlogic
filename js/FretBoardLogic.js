@@ -209,7 +209,7 @@ const FRETBOARD_APP = {
     },
     getMidiPlayer: function(){
         if (!exists(this.midiplayer)){
-            this.midiplayer = Object.create(MIDI_PLAYER).init();
+            this.midiplayer = Object.create(MIDI_PLAYER).init(2);
         }
         return this.midiplayer;
     }
