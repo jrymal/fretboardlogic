@@ -254,8 +254,9 @@ function playNotes(event){
 }
 
 function buildUpDown(noteList){
+    const DEFAULT_OCT = 4;
     let scaleUp = [];
-    let currentOct = 4;
+    let currentOct = DEFAULT_OCT;
     let lastIdx = -1;
 
     noteList.forEach(
@@ -270,6 +271,6 @@ function buildUpDown(noteList){
     );
     let scaleDown = clone(scaleUp).reverse();
 
-    return scaleUp.concat(noteList[0]+":"+currentOct, scaleDown);
+    return scaleUp.concat(noteList[0]+":"+(DEFAULT_OCT+1), scaleDown);
 }
 
