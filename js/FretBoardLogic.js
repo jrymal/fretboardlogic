@@ -250,6 +250,26 @@ function buildCaption(scaleInfo){
 function playNotes(event){
     let mp = app.getMidiPlayer();
     let scale = getDataAttribute(event.target, "scale");
-    mp.playNote(scale.split(','));
+    mp.playNote(buildUpDown(scale.split(',')));
+}
+
+function buildUpDown(noteList){
+    let scaleUp = [];
+    let currentOct = 4;
+    let lastIdx = -1;
+
+    noteList.forEach(
+        note =>{
+            let currentIdx = NOTES.indexOf(note);
+            if (currentIdx < lastIdx){
+                currentOct++;
+            }
+            lastIdx = currentIdx;
+            scaleUp.push(note+":"+currentOct);
+        }
+    );
+    let scaleDown = clone(scaleUp).reverse();
+
+    return scaleUp.concat(noteList[0]+":"+currentOct, scaleDown);
 }
 
