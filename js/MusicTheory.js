@@ -163,6 +163,8 @@ const CHORD_INFO={
 
         this.noteMap = this.generateNoteMap(this.musicDiff.asScale(this.chordScale.scale));
 
+        this.scale = Object.keys(this.noteMap);
+
         let chordName = Object.create(CHORD_NAME).init(this.musicDiff, Object.values(this.noteMap).map((noteInfo) => noteInfo.degree));
 
         // display name for the chord

@@ -79,6 +79,14 @@ function safeRotateLeft(inList, firstNodeIdx){
     return list;
 }
 
+function setDataAttribute(element, dataName, value){
+     if (element.dataset){
+         element.dataset[dataName] = value;
+     } else {
+         element.setAttribute("data-"+dataName, value);
+     }
+}
+
 function getDataAttribute(element, dataName, defaultValue){
     let value = element.dataset 
         ? element.dataset[dataName] 

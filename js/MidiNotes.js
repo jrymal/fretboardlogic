@@ -1,5 +1,10 @@
 'use strict'
 
+const BASELINE_IDX = 9;
+const BASELINE_NOTE = "A";
+const BASELINE_OCT = 4;
+const BASELINE_FREQ = 440;
+
 const VCO = {
     init: function(context){
         this.context = context;
@@ -159,10 +164,6 @@ const VOICE_LIST = {
 
 const MIDI_PLAYER = {
     init: function(voiceCount=1){
-        const BASELINE_IDX = 9;
-        const BASELINE_NOTE = "A";
-        const BASELINE_OCT = 4;
-        const BASELINE_FREQ = 440;
         
         let context =  new (window.AudioContext || window.webkitAudioContext);
         this.voice = Object.create(VOICE_LIST).init(context, voiceCount);

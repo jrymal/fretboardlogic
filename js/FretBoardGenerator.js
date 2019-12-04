@@ -37,12 +37,9 @@ const FRETBOARD = {
         
         removeAllChildren(eleTable);
 
-        let eleCaption = document.createElement("caption");
         let tBodyFrag = document.createDocumentFragment();
         let eleTBody = document.createElement("tbody");
         tBodyFrag.appendChild(eleTBody);
-
-        eleCaption.innerHTML = scaleInfo.name;
 
         for (let stringIdx = length(this.stringList)-1 ; stringIdx >=0 ; stringIdx--){
 
@@ -56,7 +53,7 @@ const FRETBOARD = {
         }
 
 
-        eleTable.appendChild(eleCaption);
+        eleTable.appendChild(buildCaption(scaleInfo));
         eleTable.appendChild(tBodyFrag);
     },
     
@@ -64,12 +61,11 @@ const FRETBOARD = {
         
         removeAllChildren(eleTable);
 
-        let eleCaption = document.createElement("caption");
+        let eleCaption = buildCaption(scaleInfo);
         let tBodyFrag = document.createDocumentFragment();
         let eleTBody = document.createElement("tbody");
         tBodyFrag.appendChild(eleTBody);
 
-        eleCaption.innerHTML = scaleInfo.name;
         eleCaption.classList.add(scaleInfo.getDegreeAsString());
 
         let currentFret = this.fretData.getFret(0);

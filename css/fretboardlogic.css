@@ -23,6 +23,13 @@ h2 {
     color: var(--color-header-bkgnd);
 }
 
+.playable > p{
+    display:inline-flex;
+}
+.playable > button {
+    display:inline-flex;
+    margin: 0 20px;
+}
 
 .note-cell{
     height: 1.2em;

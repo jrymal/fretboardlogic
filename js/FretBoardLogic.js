@@ -207,6 +207,12 @@ const FRETBOARD_APP = {
         randomizeList("key");
         this.updateAll();
     },
+    getMidiPlayer: function(){
+        if (!exists(this.midiplayer)){
+            this.midiplayer = Object.create(MIDI_PLAYER).init();
+        }
+        return this.midiplayer;
+    }
 };
 
 /* HTML functions */
@@ -224,4 +230,26 @@ function randomizeScale(){
     app.randomizeScale();
 }
 
+function buildCaption(scaleInfo){
+    let eleCaption = document.createElement("caption");
+    eleCaption.className += "playable";
+
+    let title = document.createElement("p");
+    let button = document.createElement("button");
+    
+    title.innerHTML = scaleInfo.name;
+    button.innerText = "Play Notes";
+    setDataAttribute(button, "scale", scaleInfo.scale);
+    button.addEventListener('click', playNotes);
+
+    eleCaption.appendChild(title);
+    eleCaption.appendChild(button);
+    return eleCaption;
+}
+
+function playNotes(event){
+    let mp = app.getMidiPlayer();
+    let scale = getDataAttribute(event.target, "scale");
+    mp.playNote(scale.split(','));
+}
 

@@ -55,12 +55,11 @@ const KEYBOARD = {
         
         removeAllChildren(eleTable);
 
-        let eleCaption = document.createElement("caption");
+        let eleCaption = buildCaption(scaleInfo);
         let tBodyFrag = document.createDocumentFragment();
         let eleTBody = document.createElement("tbody");
         tBodyFrag.appendChild(eleTBody);
 
-        eleCaption.innerHTML = scaleInfo.name;
         if (scaleInfo["getDegreeAsString"]){
             eleCaption.classList.add(scaleInfo.getDegreeAsString());
         }
