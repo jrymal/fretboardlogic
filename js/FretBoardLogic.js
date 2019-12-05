@@ -176,16 +176,18 @@ const FRETBOARD_APP = {
     updateAll: function(){
         history.replaceState( app.getState(), window.title, window.location);
 
-        let mod = SCALES[getSelectedValue($("modifier"))];
+        let modListBox = $("modifier");
+        let prettyName = modListBox.options[modListBox.selectedIndex].text;
+        let mod = SCALES[getSelectedValue(modListBox)];
         let key = getSelectedValue($("key"));
 
-        let gen
+        let gen;
         let inst = getSelectedValue($("instrument"));
         if (inst === "piano") {
-            gen = Object.create(KEYBOARD_GENERATOR).init(key, mod);
+            gen = Object.create(KEYBOARD_GENERATOR).init(key, mod, prettyName);
         } else {
             let stringList = INSTRUMENTS[inst];
-            gen = Object.create(FRETBOARD_GENERATOR).init(stringList, key, mod);
+            gen = Object.create(FRETBOARD_GENERATOR).init(stringList, key, mod, prettyName);
         }
 
         gen
@@ -210,6 +212,9 @@ const FRETBOARD_APP = {
     getMidiPlayer: function(){
         if (!exists(this.midiplayer)){
             this.midiplayer = Object.create(MIDI_PLAYER).init(2);
+            this.midiplayer.voice
+                .setProperty("envelope","releaseTime",0.37)
+            ;
         }
         return this.midiplayer;
     }
@@ -238,7 +243,7 @@ function buildCaption(scaleInfo){
     let button = document.createElement("button");
     
     title.innerHTML = scaleInfo.name;
-    button.innerText = "Play Notes";
+    button.innerText = "Play "+scaleInfo.shortName;
     setDataAttribute(button, "scale", scaleInfo.scale);
     button.addEventListener('click', playNotes);
 
@@ -249,8 +254,12 @@ function buildCaption(scaleInfo){
 
 function playNotes(event){
     let mp = app.getMidiPlayer();
-    let scale = getDataAttribute(event.target, "scale");
-    mp.playNote(buildUpDown(scale.split(',')));
+    let button = event.target;
+    let scale = getDataAttribute(button, "scale");
+    button.disabled = true;
+    mp.playNote(buildUpDown(scale.split(',')), 1, function(){
+        button.disabled = false;
+    });
 }
 
 function buildUpDown(noteList){

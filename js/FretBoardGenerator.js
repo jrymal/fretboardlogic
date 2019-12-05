@@ -3,9 +3,9 @@
 const SHOWN_FRETS=15;
 
 const FRETBOARD_GENERATOR={
-    init: function(stringList, key, modifiers){
+    init: function(stringList, key, modifiers, prettyName){
         this.fretboard = Object.create(FRETBOARD).init(stringList);
-        this.scaleinfo = Object.create(SCALE_INFO).init(key, modifiers)
+        this.scaleinfo = Object.create(SCALE_INFO).init(key, modifiers, prettyName)
         return this;
     },
 

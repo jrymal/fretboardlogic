@@ -134,8 +134,7 @@ const VOICE = {
     },
     stop: function(){
         this.vca.setVolume(0);
-    }
-   
+    }   
 };
 
 const VOICE_LIST = {
@@ -158,6 +157,16 @@ const VOICE_LIST = {
         for(let i = 0; i < this.voiceList.length; i++){
             this.voiceList[i].stop();
         }
+    },
+    setProperty: function(functionality, propertyName, value, voiceIdx){
+        if (!exists(voiceIdx)){
+            for(let i = 0; i < this.voiceList.length; i++){
+                this.voiceList[i][functionality][propertyName] = value;
+            }
+        } else {
+            this.voiceList[voiceIdx][propertyName] = value;
+        }
+        return this;
     }
  
 };
@@ -171,7 +180,7 @@ const MIDI_PLAYER = {
         return this;
     },
 
-    playNote:function(noteList, cnt=1) {
+    playNote:function(noteList, cnt, completedCallback) {
 
         if (!Array.isArray(noteList)){
             noteList = [ noteList ];
@@ -186,26 +195,35 @@ const MIDI_PLAYER = {
             );
         }
 
-        this.timerId = setInterval(this.playNoteList, this.space, this, fullNoteList);
-    },
-
-   playNoteList : function(midiPlayer, noteList) {
-        let note = noteList.shift();
-        if (note){
-            midiPlayer.voice.playFreq(midiPlayer.noteFreq(note));
-        } else {
-            clearInterval(midiPlayer.timerId);
-        }
-    },
-
-    stop:function(oscMatch){
-        this.voice.stop();
+        let player = Object.create(PLAY_LIST).init(this, fullNoteList, completedCallback);
     },
 
     setSpacing : function(space){
         this.space = space;
     },
 
+    stop:function(oscMatch){
+        this.voice.stop();
+    },
+};
+
+const PLAY_LIST = {
+    init: function(midiPlayer, fullNoteList, completedCallback){
+        this.timerId = setInterval(this.playNoteList, midiPlayer.space, this, midiPlayer, fullNoteList);
+        this.completedCallback = completedCallback;
+    },
+    
+    playNoteList : function(playList, midiPlayer, noteList) {
+        let note = noteList.shift();
+        if (note){
+            midiPlayer.voice.playFreq(playList.noteFreq(note));
+        } else {
+            clearInterval(playList.timerId);
+            if (playList.completedCallback){
+                playList.completedCallback();
+            }
+        }
+    },
 
     noteFreq : function(note){
         let dist = this.findDistanceOfNote(note);

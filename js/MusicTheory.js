@@ -50,7 +50,7 @@ function getDegreeAsRN(scaleIdx){
 }
 
 const SCALE_INFO = {
-    init: function(key, modifiers){
+    init: function(key, modifiers, prettyName){
         // String
         this.key = key;
         // Modifier Obj
@@ -63,7 +63,8 @@ const SCALE_INFO = {
             .map(noteInfo => noteInfo.note);
 
         // String
-        this.name = getDisplayNote(key) +" Scale";
+        this.name = getDisplayNote(key) + " " + prettyName + " Scale";
+        this.shortName = this.name;
         this.chords = {};
 
         return this;
@@ -120,7 +121,7 @@ const SCALE_INFO = {
             this.majScale = Object.create(SCALE_INFO).init(this.key, {
                 "notes":STD_SCALE_DEGREES,
                 "intervals":STD_SCALE_INTERVAL
-            });
+            }, "Major");
         }
 
         let noteDiff = noteInfo.findClosestNoteInfoInList(this.majScale, 1);
@@ -151,7 +152,7 @@ const CHORD_INFO={
         this.chordScale = Object.create(SCALE_INFO).init(this.note, {
             "notes":STD_SCALE_DEGREES,
             "intervals":STD_SCALE_INTERVAL
-        });
+        }, "Major");
 
          // iterate though the note map
         this.musicDiff = Object.create(MUSIC_DIFF).init(Object.values(this.chordScale.noteMap)
@@ -168,11 +169,12 @@ const CHORD_INFO={
         let chordName = Object.create(CHORD_NAME).init(this.musicDiff, Object.values(this.noteMap).map((noteInfo) => noteInfo.degree));
 
         // display name for the chord
-        this.name = this.note +chordName.primaryName;
+        this.shortName = this.note +chordName.primaryName;
+        this.name = clone(this.shortName);
         if (!isBlank(chordName.addedNotes)){
             this.name += "<sup>"+chordName.addedNotes+"</sup> ";
         }
-        this.name += "  -  "+this.getDegreeAsRN();
+        this.name += NBSP+NBSP+"-"+NBSP+NBSP+this.getDegreeAsRN();
         return this;
     },
 

@@ -1,5 +1,7 @@
 'use strict';
 
+const NBSP = "&nbsp;";
+
 function $(id, prefix = '') {
     return document.getElementById(isBlank(prefix) ? id : prefix+'.'+id);
 }

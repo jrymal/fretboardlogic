@@ -26,9 +26,9 @@ const NaturalKeys =
 const MAX_BOARD_CNT = 2;
 
 const KEYBOARD_GENERATOR = {
-    init: function(key, modifiers){
+    init: function(key, modifiers, prettyName){
         this.keyboard = Object.create(KEYBOARD);
-        this.scaleinfo = Object.create(SCALE_INFO).init(key, modifiers)
+        this.scaleinfo = Object.create(SCALE_INFO).init(key, modifiers, prettyName)
         return this;
     },
 
