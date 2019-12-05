@@ -98,6 +98,11 @@ const SCALE_INFO = {
         return null;
     },
 
+    getPlayedNotes: function(){
+        return this.scale
+            .filter( (note, idx) => this.modifiers.notes.indexOf(idx+1) >= 0);
+    },
+
     getNote: function(note){
         let noteInfo = this.noteMap[note];
 
@@ -177,7 +182,9 @@ const CHORD_INFO={
         this.name += NBSP+NBSP+"-"+NBSP+NBSP+this.getDegreeAsRN();
         return this;
     },
-
+    getPlayedNotes: function(){
+        return this.scale;
+    },
     hasMatch: function(chordMap){
         let matches = Object.values(chordMap)
             .filter( (chord) => this !== chord )

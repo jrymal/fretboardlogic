@@ -31,7 +31,7 @@ input,
 select, 
 textarea, 
 a  {
-    padding: 0 0 0.2em 0;
+    padding: 0.2em;
     font-size: 1.0em;
 }
 

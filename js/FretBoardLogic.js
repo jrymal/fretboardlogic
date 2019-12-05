@@ -244,7 +244,7 @@ function buildCaption(scaleInfo){
     
     title.innerHTML = scaleInfo.name;
     button.innerText = "Play "+scaleInfo.shortName;
-    setDataAttribute(button, "scale", scaleInfo.scale);
+    setDataAttribute(button, "scale", scaleInfo.getPlayedNotes());
     button.addEventListener('click', playNotes);
 
     eleCaption.appendChild(title);
