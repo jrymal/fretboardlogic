@@ -55,9 +55,27 @@ const VCO = {
 const EnvelopeGenerator = {
     init: function(context) {
         this.context = context;
-        this.attackTime = 0.005;
-        this.releaseTime = 0.9;
+        
+        // time to full volume
+        this.attackTime = 0.01;
+        
+        // time to full quiet after decay time
+        this.releaseTime = 0.1;
+        
+        // value to first drop
+        this.decayValue = 0.35;
+        
+        // time to first drop
+        this.decayTime = 0.1;
+        
+        // peak value
+        this.maxValue = 0.9;
 
+        // time remaining at max value
+        this.maxTime = .1;
+
+        // time remaining at decay value
+        this.sustainTime = 0.1;
         return this;
     },
 
@@ -72,9 +90,13 @@ const EnvelopeGenerator = {
     trigger: function() {
         let now = this.context.currentTime;
         this.param.cancelScheduledValues(now);
+        
         this.param.setValueAtTime(0, now);
-        this.param.exponentialRampToValueAtTime(1, now + this.attackTime);
-        this.param.linearRampToValueAtTime(0, now + this.attackTime + this.releaseTime);
+        this.param.linearRampToValueAtTime(this.maxValue, now + this.attackTime);
+        this.param.linearRampToValueAtTime(this.maxValue, now + this.attackTime + this.maxTime);
+        this.param.linearRampToValueAtTime(this.decayValue, now + this.attackTime + this.maxTime+ this.decayTime);
+        this.param.linearRampToValueAtTime(this.decayValue, now + this.attackTime + this.maxTime+ this.decayTime + this.sustainTime);
+        this.param.linearRampToValueAtTime(0, now + this.attackTime + this.maxValue + this.decayTime + this.sustainTime + this.releaseTime);
     },
 
     connect: function(param) {
