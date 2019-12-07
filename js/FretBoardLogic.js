@@ -9,6 +9,8 @@ const INSTRUMENTS = {
     "guitar7":["B", "E", "A", "D", "G", "B", "E"],
     "guitar8T":["E","B", "E", "A", "D", "G", "B", "E"],
     "mandolin":["G", "D", "A", "E"],
+    "ukuleleBar":["D", "G", "B", "E"],
+    "ukuleleSup":["G", "C", "E", "A"],
 };
 
 const SCALES = {
