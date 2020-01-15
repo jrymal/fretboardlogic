@@ -15,6 +15,7 @@ const VCO = {
         
         this.input = this.oscillator;
         this.output = this.oscillator;
+        this.frequency = this.oscillator.frequency;
         return this;
     },
 
@@ -66,7 +67,7 @@ const EnvelopeGenerator = {
         this.decayValue = 0.35;
         
         // time to first drop
-        this.decayTime = 0.1;
+        this.decayTime = 0.35;
         
         // peak value
         this.maxValue = 0.9;
@@ -92,11 +93,15 @@ const EnvelopeGenerator = {
         this.param.cancelScheduledValues(now);
         
         this.param.setValueAtTime(0, now);
-        this.param.linearRampToValueAtTime(this.maxValue, now + this.attackTime);
-        this.param.linearRampToValueAtTime(this.maxValue, now + this.attackTime + this.maxTime);
-        this.param.linearRampToValueAtTime(this.decayValue, now + this.attackTime + this.maxTime+ this.decayTime);
-        this.param.linearRampToValueAtTime(this.decayValue, now + this.attackTime + this.maxTime+ this.decayTime + this.sustainTime);
-        this.param.linearRampToValueAtTime(0, now + this.attackTime + this.maxValue + this.decayTime + this.sustainTime + this.releaseTime);
+        this.param.linearRampToValueAtTime(this.maxValue,   now + this.attackTime);
+        this.param.linearRampToValueAtTime(this.maxValue,   now + this.attackTime + this.maxTime);
+        this.param.linearRampToValueAtTime(this.decayValue, now + this.attackTime + this.maxTime + this.decayTime);
+        this.param.linearRampToValueAtTime(this.decayValue, now + this.attackTime + this.maxTime + this.decayTime + this.sustainTime);
+        this.param.linearRampToValueAtTime(0,               now + this.attackTime + this.maxTime + this.decayTime + this.sustainTime + this.releaseTime);
+    },
+
+    getTotalTime: function() {
+        return this.attackTime + this.maxTime + this.decayTime + this.sustainTime + this.releaseTime;
     },
 
     connect: function(param) {
@@ -104,6 +109,43 @@ const EnvelopeGenerator = {
     },
 };
 
+const RelativeRNG = {
+    init: function(context) {
+        this.context = context;
+        
+        this.centMin = 0.025;
+        this.centMax = 0.025;
+        this.changeCnt = 30;
+        
+        return this;
+    },
+
+    trigger: function(targetValue, totalTime) {
+        let now = this.context.currentTime;
+        this.param.cancelScheduledValues(now);
+        
+        let origValue = targetValue;
+        let min = origValue - (origValue * this.centMin);
+        let max = origValue + (origValue * this.centMax);
+
+        let runningTime = now;
+        this.param.linearRampToValueAtTime(origValue, runningTime);
+        for(let i = 1; i < this.changeCnt; i++){
+            let value = this.getRNGValue(min, max);
+            runningTime = i*totalTime/this.changeCnt;
+            this.param.linearRampToValueAtTime(value, runningTime);
+        }
+        this.param.linearRampToValueAtTime(origValue, runningTime);
+    },
+
+    getRNGValue: function(min, max){
+        return (Math.random() * (max - min)) + min;
+    },
+
+    connect: function(param) {
+        this.param = param;
+    },
+};
 const VCA = {
     init: function(context) {
         this.gain = context.createGain();
@@ -133,9 +175,11 @@ const VOICE = {
         let vco = Object.create(VCO).init(context);
         let vca = Object.create(VCA).init(context);
         let envelope = Object.create(EnvelopeGenerator).init(context);
+        let pitchControl = Object.create(RelativeRNG).init(context);
 
         vco.connect(vca);
         envelope.connect(vca.amplitude);
+        pitchControl.connect(vco.frequency);
         vca.connect(context.destination);
         
 
@@ -143,15 +187,20 @@ const VOICE = {
         this.vco = vco;
         this.vca = vca;
         this.envelope = envelope;
+        this.pitchControl = pitchControl;
         
         return this;
     },
 
     playFreq: function(freq) {
-        this.vca.setVolume(0);
+        this.stop();
         this.vco.start();
 
-        this.vco.setFrequency(freq);
+        // controls the freq, mutually exclusive
+        //this.vco.setFrequency(freq);
+        this.pitchControl.trigger(freq, this.envelope.getTotalTime());
+        
+        // starts the sound
         this.envelope.trigger();
     },
     stop: function(){

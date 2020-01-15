@@ -50,6 +50,22 @@ const SCALES = {
         "notes":[1, 2, 3, 4, 5, 6, 7, 8, 9],
         "intervals":[2, 1, 1, 1, 2, 2, 1, 1, 1]
     },
+    "egyptian-pent":{
+        "notes":[1, 2, 4, 5, 7],
+        "intervals":[2, 2, 1, 2, 2, 1, 2]
+    },
+    "dorian-sharp4":{
+        "notes":[1, 2, 3, 4, 5, 6, 7],
+        "intervals":[2, 1, 3, 1, 2, 1, 2]
+    },
+    "phrygian-dom":{
+        "notes":[1, 2, 3, 4, 5, 6, 7],
+        "intervals":[1, 3, 1, 2, 1, 2, 2]
+    },
+    "hirajoshi":{
+        "notes":[1, 2, 4, 5, 7],
+        "intervals":[ 1, 3, 1, 1, 3, 1, 2]
+    },
     "ionian-maj":{
         "notes":STD_SCALE_DEGREES,
         "intervals":STD_SCALE_INTERVAL
