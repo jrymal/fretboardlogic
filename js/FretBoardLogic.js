@@ -30,6 +30,14 @@ const SCALES = {
         "notes":STD_SCALE_DEGREES,
         "intervals":[ 2, 1, 2, 2, 1, 3, 1]
     },
+    "h-min-b5":{
+        "notes":[1, 2, 3, 4, 5, 6, 7, 8],
+        "intervals":[ 2, 1, 2, 1, 1, 1, 3, 1]
+    },
+    "m-min":{
+        "notes":STD_SCALE_DEGREES,
+        "intervals":[ 2, 1, 2, 2, 2, 2, 1]
+    },
     "pent-maj":{
         "notes":[1, 2, 3, 5, 6],
         "intervals":STD_SCALE_INTERVAL
@@ -65,6 +73,34 @@ const SCALES = {
     "hirajoshi":{
         "notes":[1, 2, 4, 5, 7],
         "intervals":[ 1, 3, 1, 1, 3, 1, 2]
+    },
+    "aolean-dom":{
+        "notes":[1, 2, 3, 4, 5, 6, 7],
+        "intervals":[ 2, 2, 1, 2, 1, 2, 2]
+    },
+    "diminished-2":{
+        "notes":[1, 2, 3, 4, 5, 6, 7, 8],
+        "intervals":[ 2, 1, 2, 1, 2, 1, 2, 1]
+    },
+    "diminished-b2":{
+        "notes":[1, 2, 3, 4, 5, 6, 7, 8],
+        "intervals":[ 1, 2, 1, 2, 1, 2, 1, 2]
+    },
+    "persian":{
+        "notes":[1, 2, 3, 4, 5, 6, 7],
+        "intervals":[ 1, 3, 1, 1, 2, 3, 1]
+    },
+    "doubleharmonic":{
+        "notes":[1, 2, 3, 4, 5, 6, 7],
+        "intervals":[ 1, 3, 1, 2, 1, 3, 1]
+    },
+    "doubleharmonic-min":{
+        "notes":[1, 2, 3, 4, 5, 6, 7],
+        "intervals":[ 2, 1, 3, 1, 1, 3, 1]
+    },
+    "enigmatic":{
+        "notes":[1, 2, 3, 4, 5, 6, 7],
+        "intervals":[ 1, 3, 2, 2, 2, 1, 1]
     },
     "ionian-maj":{
         "notes":STD_SCALE_DEGREES,
