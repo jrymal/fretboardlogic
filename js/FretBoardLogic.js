@@ -256,6 +256,11 @@ const FRETBOARD_APP = {
         .createChord("chord-eighth", 8)
         .createChord("chord-ninth", 9)
         ;
+
+        let scaleNotation = $("scale-notation");
+        removeAllChildren(scaleNotation);
+        scaleNotation.appendChild(Object.create(STAFF).init().getImage());
+        
     },
 
     randomizeScale: function(){
