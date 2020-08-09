@@ -10,7 +10,14 @@ DEFAULT_PORT=8081
 function start {
     if ! isRunning ; then
         port=${1:-${DEFAULT_PORT}}
-        python -m SimpleHTTPServer ${port} > ${LOG_FILE} 2> ${ERR_FILE} &
+        ip_address=$(hostname -I | awk '{print $1}')
+        if command -v python3 &> /dev/null; then
+            # prefer python3
+            python3 -m http.server -b ${ip_address} ${port} > ${LOG_FILE} 2> ${ERR_FILE} &
+        else
+            # python2 does not support http.server with the server ip
+            python -m SimpleHTTPServer ${port} > ${LOG_FILE} 2> ${ERR_FILE} &
+        fi
         PID=$!
         echo ${PID} > ${PID_FILE}
         echo ${port} > ${PORT_FILE}
