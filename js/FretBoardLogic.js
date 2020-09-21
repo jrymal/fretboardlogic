@@ -245,7 +245,7 @@ const FRETBOARD_APP = {
         }
 
         gen
-        .createScale($("scale-table"))
+        .createScale("scale")
         .createChord("chord-root", 1)
         .createChord("chord-second", 2)
         .createChord("chord-third", 3)

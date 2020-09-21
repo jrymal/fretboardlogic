@@ -28,10 +28,11 @@
         <link rel="apple-touch-icon" href="images/icons-192.png"/>
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/> <!-- or black -->
 
+        <script type="module" src="modules/div.dev.3.0.6.js"> </script>
         <script type="text/javascript" src="js/Util.js"> </script>
         <script type="text/javascript" src="js/MusicTheory.js"> </script>
-        <script type="text/javascript" src="js/FretBoardLogic.js"> </script>
-        <script type="text/javascript" src="js/FretBoardGenerator.js" async> </script>
+        <script nomodule type="text/javascript" src="js/FretBoardLogic.js"> </script>
+        <script nomodule type="text/javascript" src="js/FretBoardGenerator.js" async> </script>
         <script type="text/javascript" src="js/KeyBoardGenerator.js" async> </script>
         <script type="text/javascript" src="js/MidiNotes.js" async> </script>
         <link rel="stylesheet" type="text/css" href="css/core.css" media="all" async/>
@@ -149,6 +150,7 @@
                     <summary>How to use</summary>
                     <p>This is a horizontal representation of your fret board. The thick line on the left is the top of the fretboard (called the nut) and the rightmost is the bottom of the fretboard pointing to the tail of the instrument. The strings are arranged thickest to thinest (take your instrument and flip it so the fret board is facing you). This visual orientation is similar to the standard TAB format. Note that "special" frets are highlighted in grey and include the 3, 5, 7, 9, 12, and 15 frets for easier recognition.</p>
                 </details>
+                <div id="scale-vextab"></div>
                 <table class="scale" id="scale-table">
                 </table>
             </section>
