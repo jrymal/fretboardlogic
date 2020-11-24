@@ -42,7 +42,14 @@
         <section class="header">
             <h1>Fret Board Logic</h1>
         </section>
-        <button id="install-app" class="hidden" onClick="installApp()">Install as an App</button>
+        
+        <section class="tools">
+            <button id="install-app" class="hidden" onClick="installApp()">Install as an App</button>
+            
+            <label for="volume">Volume
+                <input name="volumne" type="range" id="volume" min="0" max="100" step="1 " value="80" onClick="setVolume()"/>
+            </label>
+        </section>
         
         <noscript>
             <h2>This site requires Javascript</h2>
@@ -207,7 +214,7 @@
         </div>
 
         <script>
-            'use strict';
+            "use strict";
             if('serviceWorker' in navigator) {
                 navigator.serviceWorker
                     .register('fretboardlogic-serviceworker.js')

@@ -49,6 +49,7 @@ textarea {
     display: block;
 }
 
+label > input[type=range],
 label > input[type=radio],
 label > input[type=checkbox]{
     display: inline;

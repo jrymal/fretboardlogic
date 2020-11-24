@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const SharpKeys =
    `<td class="key"></td>

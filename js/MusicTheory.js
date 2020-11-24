@@ -1,4 +1,5 @@
-'use strict';
+"use strict";
+
 const CHAR_FLAT="\u266D";
 const CHAR_NATURAL="\u266E";
 const CHAR_SHARP="\u266F";

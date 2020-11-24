@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const INSTRUMENTS = {
     "banjo5":["G:5", "D", "G", "B", "D"],
@@ -165,6 +165,7 @@ const FRETBOARD_APP = {
         this.setState(history.state);
         this.addUiListeners();
         this.updateAll();
+        this.setVolume();
         
         return this;
     },
@@ -186,6 +187,11 @@ const FRETBOARD_APP = {
         $("key").addEventListener("change", this.updateAll);
         $("modifier").addEventListener("change", this.updateAll);
         $("randomizer").addEventListener("click", randomizeScale);
+    },
+
+    setVolume : function(){
+        let mp = app.getMidiPlayer();
+        mp.setVolume($("volume").value);
     },
 
     setState: function(state){
@@ -284,6 +290,10 @@ function installApp() {
 
 function randomizeScale(){
     app.randomizeScale();
+}
+
+function setVolume(){
+    app.setVolume();
 }
 
 function buildCaption(scaleInfo){

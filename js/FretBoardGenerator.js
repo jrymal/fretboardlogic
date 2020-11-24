@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const SHOWN_FRETS=15;
 

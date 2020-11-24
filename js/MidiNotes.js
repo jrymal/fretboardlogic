@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 
 const BASELINE_IDX = 9;
 const BASELINE_NOTE = "A";
@@ -79,6 +79,10 @@ const EnvelopeGenerator = {
         this.sustainTime = 0.1;
         return this;
     },
+    setVolume: function(value){
+        this.maxValue = 0.9 * (value/100);
+        this.decayValue = 0.35 * (value/100);
+    },
 
     setAttack: function(value){
         this.attackTime = value;
@@ -157,7 +161,7 @@ const VCA = {
     },
 
     setVolume: function(value){
-        this.gain.gain.value = value;
+        this.gain.gain.value = value/100;
     },
 
     connect: function(node) {
@@ -205,6 +209,10 @@ const VOICE = {
     },
     stop: function(){
         this.vca.setVolume(0);
+    },   
+    setVolume: function(volume){
+        this.vca.setVolume(volume);
+        this.envelope.setVolume(volume);
     }   
 };
 
@@ -229,6 +237,11 @@ const VOICE_LIST = {
             this.voiceList[i].stop();
         }
     },
+    setVolume : function(volume){
+        for(let i = 0; i < this.voiceList.length; i++){
+            this.voiceList[i].setVolume(volume);
+        }
+    },
     setProperty: function(functionality, propertyName, value, voiceIdx){
         if (!exists(voiceIdx)){
             for(let i = 0; i < this.voiceList.length; i++){
@@ -248,11 +261,13 @@ const MIDI_PLAYER = {
         let context =  new (window.AudioContext || window.webkitAudioContext);
         this.voice = Object.create(VOICE_LIST).init(context, voiceCount);
         this.space = 200;
+        this.volume = 100;
         return this;
     },
 
     playNote:function(noteList, cnt, completedCallback) {
 
+        
         if (!Array.isArray(noteList)){
             noteList = [ noteList ];
         }
@@ -273,6 +288,10 @@ const MIDI_PLAYER = {
         this.space = space;
     },
 
+    setVolume: function(volume){
+        this.volume = volume;
+    },
+    
     stop:function(oscMatch){
         this.voice.stop();
     },
@@ -286,6 +305,7 @@ const PLAY_LIST = {
     
     playNoteList : function(playList, midiPlayer, noteList) {
         let note = noteList.shift();
+        midiPlayer.voice.setVolume(midiPlayer.volume);
         if (note){
             midiPlayer.voice.playFreq(playList.noteFreq(note));
         } else {

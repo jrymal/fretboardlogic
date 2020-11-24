@@ -10,7 +10,7 @@ DEFAULT_PORT=8081
 function start {
     if ! isRunning ; then
         port=${1:-${DEFAULT_PORT}}
-        ip_address=$(hostname -I | awk '{print $1}')
+        ip_address=$(hostname | awk '{print $1}')
         if command -v python3 &> /dev/null; then
             # prefer python3
             python3 -m http.server -b ${ip_address} ${port} > ${LOG_FILE} 2> ${ERR_FILE} &
