@@ -2,15 +2,15 @@
     --color-header-bkgnd: #612525;
     --color-header-fgnd: var(--color-primary-background);
 
-    --color-root: #00f000;
-    --color-second: #a0d0a0;
-    --color-third: #d0a0d0;
-    --color-fourth: #00c000;
-    --color-fifth: #60a060;
-    --color-sixth: #f090f0;
-    --color-seventh: #f070f0;
-    --color-eighth: #f00000;
-    --color-ninth: #f07000;
+    --color-root:    #e74c3c;
+    --color-second:  #e67e22;
+    --color-third:   #f9e79f;
+    --color-fourth:  #2dd413;
+    --color-fifth:   #0aadab;
+    --color-sixth:   #ad6cc8;
+    --color-seventh: #f5b7b1;
+    --color-eighth:  #658de9;
+    --color-ninth:   #e59866;
 }
 
 .header {

@@ -11,6 +11,7 @@ function start {
     if ! isRunning ; then
         port=${1:-${DEFAULT_PORT}}
         ip_address=$(hostname | awk '{print $1}')
+        echo Running on $ip_address
         if command -v python3 &> /dev/null; then
             # prefer python3
             python3 -m http.server -b ${ip_address} ${port} > ${LOG_FILE} 2> ${ERR_FILE} &
