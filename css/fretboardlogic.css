@@ -1,6 +1,8 @@
 :root {
     --color-header-bkgnd: #612525;
     --color-header-fgnd: var(--color-primary-background);
+    
+    --color-inlay-fret: #656161;
 
     --color-root:    #e74c3c;
     --color-second:  #e67e22;
@@ -117,7 +119,7 @@ section details {
 .fret9,
 .fret12,
 .fret15{
-    background-color: var(--color-alt-row-background);
+    background-color: var(--color-inlay-fret);
 }
 
 .scale{
