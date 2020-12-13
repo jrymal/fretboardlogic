@@ -1,5 +1,8 @@
 "use strict";
 
+const ColGroup =
+   `<col colspan="1" style="width:1em"/>`;
+
 const SharpKeys =
    `<td class="key"></td>
     <td class="key" colspan="2" data-note="C#"></td>
@@ -56,6 +59,11 @@ const KEYBOARD = {
         removeAllChildren(eleTable);
 
         let eleCaption = buildCaption(scaleInfo);
+        
+        let colGroupFrag = document.createDocumentFragment();
+        let eleColGroup = document.createElement("colgroup");
+        colGroupFrag.appendChild(eleColGroup);
+        
         let tBodyFrag = document.createDocumentFragment();
         let eleTBody = document.createElement("tbody");
         tBodyFrag.appendChild(eleTBody);
@@ -65,14 +73,12 @@ const KEYBOARD = {
         }
 
         // build keyboard
-        let sharpKeys = SharpKeys;
-        let naturalKeys = NaturalKeys;
+        let colgroups = repeatConcat(ColGroup, 17*keyboardCount);
+        eleColGroup.innerHTML = colgroups;
 
-        for (let repeats = 1; repeats < keyboardCount ; repeats++){
-            sharpKeys = sharpKeys.concat(SharpKeys);
-            naturalKeys = naturalKeys.concat(NaturalKeys);
-        }
-        
+        let sharpKeys = repeatConcat(SharpKeys, keyboardCount);
+        let naturalKeys = repeatConcat(NaturalKeys, keyboardCount);
+
         let sharpsRow = eleTBody.insertRow();
         let naturalRow = eleTBody.insertRow();
         
@@ -92,6 +98,7 @@ const KEYBOARD = {
         );
 
         eleTable.appendChild(eleCaption);
+        eleTable.appendChild(colGroupFrag);
         eleTable.appendChild(tBodyFrag);
     },
 

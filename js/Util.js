@@ -104,3 +104,11 @@ function randomizeList(selectEleId){
     let selectedIdx = Math.floor(Math.random() * Math.floor(nodeList.length));
     $(selectEleId).value = nodeList[selectedIdx].value;
 }
+
+function repeatConcat(baseString, numConcat){
+    let resp="";
+    for(let i=0; i < numConcat; i++){
+        resp = resp.concat(baseString);
+    }
+    return resp;
+}
