@@ -183,14 +183,19 @@ const FRETBOARD_APP = {
     },
 
     addUiListeners: function(){
-        $("instrument").addEventListener("change", this.updateAll);
-        $("key").addEventListener("change", this.updateAll);
-        $("modifier").addEventListener("change", this.updateAll);
-        $("randomizer").addEventListener("click", randomizeScale);
+        var self = this;
+        $("install-app").addEventListener("click", () => self.installApp());
+        $("volume").addEventListener("change", () => self.setVolume());
+        $("instrument").addEventListener("change", () => self.updateAll());
+        $("key").addEventListener("change", () => self.updateAll());
+        $("modifier").addEventListener("change", () => self.updateAll());
+        $("randomizer").addEventListener("click", () => self.randomizeScale());
     },
 
     setVolume : function(){
-        let mp = app.getMidiPlayer();
+        this.saveState();
+
+        let mp = this.getMidiPlayer();
         mp.setVolume($("volume").value);
     },
 
@@ -205,6 +210,9 @@ const FRETBOARD_APP = {
             if (state["modifier"]){
                 $("modifier").value = state["modifier"];
             }
+            if (state["volume"]){
+                $("volume").value = state["volume"];
+            }
         }
     },
 
@@ -212,7 +220,8 @@ const FRETBOARD_APP = {
         return {
             "instrument":$("instrument").value,
             "key":$("key").value,
-            "modifier":$("modifier").value
+            "modifier":$("modifier").value,
+            "volume":$("volume").value
         };
     },
 
@@ -233,8 +242,12 @@ const FRETBOARD_APP = {
         });
     },
 
+    saveState: function() {
+        history.replaceState( this.getState(), window.title, window.location);
+    },
+
     updateAll: function(){
-        history.replaceState( app.getState(), window.title, window.location);
+        this.saveState();
 
         let modListBox = $("modifier");
         let prettyName = modListBox.options[modListBox.selectedIndex].text;
@@ -282,18 +295,6 @@ const app = Object.create(FRETBOARD_APP).setInstallPromptHandler();
 
 function init(){
     app.init();
-}
-
-function installApp() {
-    app.installApp();
-}
-
-function randomizeScale(){
-    app.randomizeScale();
-}
-
-function setVolume(){
-    app.setVolume();
 }
 
 function buildCaption(scaleInfo){
