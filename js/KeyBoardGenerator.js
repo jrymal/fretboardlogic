@@ -32,6 +32,7 @@ const KEYBOARD_GENERATOR = {
     init: function(key, modifiers, prettyName){
         this.keyboard = Object.create(KEYBOARD);
         this.scaleinfo = Object.create(SCALE_INFO).init(key, modifiers, prettyName)
+        this.degreeList = CHORD_DEGREES;
         return this;
     },
 
@@ -41,9 +42,14 @@ const KEYBOARD_GENERATOR = {
         return this;
     },
 
+    setChordDegree: function(degreeList){
+        this.degreeList = degreeList;
+        return this;
+    },
+
     // Takes in a table to update to look appropriate for the theory of the chord (identified by the degree on the scale)
     createChord: function(divId, degree){
-        let chordInfo = this.scaleinfo.getChord(degree);
+        let chordInfo = this.scaleinfo.getChord(degree, this.degreeList );
         if ( chordInfo ){
             this.keyboard.create($(divId+"-table"), chordInfo, MAX_BOARD_CNT);
         }

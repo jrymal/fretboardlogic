@@ -20,7 +20,8 @@ const SCALES = {
      */
     "maj":{
         "notes":STD_SCALE_DEGREES,
-        "intervals":STD_SCALE_INTERVAL
+        "intervals":STD_SCALE_INTERVAL,
+        "notes": [1, 2, 3, 4, 5, 6, 7]
     },
     "n-min":{
         "notes":STD_SCALE_DEGREES,
@@ -190,6 +191,10 @@ const FRETBOARD_APP = {
         $("key").addEventListener("change", () => self.updateAll());
         $("modifier").addEventListener("change", () => self.updateAll());
         $("randomizer").addEventListener("click", () => self.randomizeScale());
+    
+        for(let deg = 1; deg <= 7; deg++) {
+            $("chordDegree-"+deg).addEventListener("click", () => self.updateAll());
+        }
     },
 
     setVolume : function(){
@@ -200,6 +205,7 @@ const FRETBOARD_APP = {
     },
 
     setState: function(state){
+        let setChordDegrees = false;
         if (state){
             if (state["instrument"]){
                 $("instrument").value = state["instrument"];
@@ -213,16 +219,49 @@ const FRETBOARD_APP = {
             if (state["volume"]){
                 $("volume").value = state["volume"];
             }
+            if (state["chordDegrees"]){
+                setChordDegrees = this.setChordDegrees(state["chordDegrees"]);
+            }
+        }
+        if (!setChordDegrees){
+            this.setChordDegrees(CHORD_DEGREES);
         }
     },
 
     getState: function(){
+        var self = this;
         return {
             "instrument":$("instrument").value,
             "key":$("key").value,
             "modifier":$("modifier").value,
-            "volume":$("volume").value
+            "volume":$("volume").value,
+            "chordDegrees":self.getChordDegrees()
         };
+    },
+
+    setChordDegrees: function(chordDegreeList) {
+        let curDegree = chordDegreeList.shift();
+        let setValue = false;
+        for(let deg = 1; deg <= 7; deg++) {
+            if (curDegree == deg){
+                $("chordDegree-"+deg).checked = true;
+                curDegree = chordDegreeList.shift();
+                setValue = true;
+            }
+        }
+        return setValue;
+    },
+
+    getChordDegrees(){
+        let degreeList = [];
+
+        for(let deg = 1; deg <= 7; deg++) {
+            if ($("chordDegree-"+deg).checked){
+                degreeList.push(deg);
+            }
+        }
+
+        return degreeList;
     },
 
     installApp: function(){
@@ -265,6 +304,7 @@ const FRETBOARD_APP = {
 
         gen
         .createScale($("scale-table"))
+        .setChordDegree(this.getChordDegrees())
         .createChord("chord-root", 1)
         .createChord("chord-second", 2)
         .createChord("chord-third", 3)

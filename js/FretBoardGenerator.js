@@ -6,6 +6,7 @@ const FRETBOARD_GENERATOR={
     init: function(stringList, key, modifiers, prettyName){
         this.fretboard = Object.create(FRETBOARD).init(stringList);
         this.scaleinfo = Object.create(SCALE_INFO).init(key, modifiers, prettyName)
+        this.degreeList = CHORD_DEGREES;
         return this;
     },
 
@@ -15,9 +16,14 @@ const FRETBOARD_GENERATOR={
         return this;
     },
 
+    setChordDegree: function(degreeList){
+        this.degreeList = degreeList;
+        return this;
+    },
+
     // Takes in a table to update to look appropriate for the theory of the chord (identified by the degree on the scale)
     createChord: function(divId, degree){
-        let chordInfo = this.scaleinfo.getChord(degree);
+        let chordInfo = this.scaleinfo.getChord(degree, this.degreeList );
         if ( chordInfo ){
             this.fretboard.createVerticalFrets($(divId+"-table"), chordInfo);
         }

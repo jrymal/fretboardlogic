@@ -33,7 +33,7 @@ function getDegreeAsString(scaleIdx){
         case 8: return "eighth";
         case 9: return "ninth";
     }
-    console.log("Unknown scale idx: "+scaleIdx);
+    console.log("Unknown scale idx: '"+scaleIdx+"'");
     return null;
 }
 function getDegreeAsRN(scaleIdx){
@@ -46,7 +46,7 @@ function getDegreeAsRN(scaleIdx){
         case 6: return "VI";
         case 7: return "VII";
     }
-    console.log("Unknown scale idx: "+scaleIdx);
+    console.log("Unknown scale idx: '"+scaleIdx+"'");
     return null;
 }
 
@@ -84,11 +84,11 @@ const SCALE_INFO = {
         return o;
     },
 
-    getChord: function(scaleIdx){
+    getChord: function(scaleIdx, chordDegrees = CHORD_DEGREES ){
         if (this.modifiers.notes.indexOf(scaleIdx) >= 0){
             let foundChord = this.chords[scaleIdx];
             if (!exists(foundChord)) {
-                foundChord = Object.create(CHORD_INFO).init(this,  scaleIdx);
+                foundChord = Object.create(CHORD_INFO).init(this,  scaleIdx, chordDegrees);
                 this.chords[scaleIdx] = foundChord;
             }
 
@@ -141,9 +141,12 @@ const SCALE_INFO = {
 
 /*-ChordInfo------------------------------------------------*/
 const CHORD_INFO={
-    init: function(scaleInfo, scaleIdx){
+    init: function(scaleInfo, scaleIdx, chordDegrees){
         // the degree in the scale
         this.scaleIdx=scaleIdx;
+
+        // the degrees to use in the chord
+        this.chordDegrees=chordDegrees;
 
         // The scale info object
         this.scaleInfo = scaleInfo;
@@ -212,7 +215,7 @@ const CHORD_INFO={
     generateNoteMap: function(scale){
         let o = {};
         let chordRoot = this.note;
-        CHORD_DEGREES
+        this.chordDegrees
             .forEach((degree) => {
                 let note = getNextNote(scale, chordRoot, degree-1);
                 let chordScaleNoteInfo = this.chordScale.getNote(note);
