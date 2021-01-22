@@ -47,23 +47,37 @@ const FRETBOARD = {
         let eleTBody = document.createElement("tbody");
         tBodyFrag.appendChild(eleTBody);
 
-        for (let stringIdx = length(this.stringList)-1 ; stringIdx >=0 ; stringIdx--){
+        let numOfStrings = length(this.stringList);
+        let maxStringIdx = numOfStrings - 1;
 
-            let row = eleTBody.insertRow(length(this.stringList) - 1 - stringIdx);
-            row.classList.add("frets");
-        
+        // number if strings plus the additional row(s) for identifying the fret markers
+        let width = numOfStrings + 1;
+
+        for (let rowIdx = width-1 ; rowIdx >=0 ; rowIdx--){
+
+            let row = eleTBody.insertRow(maxStringIdx - rowIdx);
+            
+            if (rowIdx > maxStringIdx){
+                row.classList.add("document");
+            } else {
+                row.classList.add("frets");
+            }
+            
             for (let fret = 0; fret <= this.fretData.maxFrets; fret++){
-                let currentNote = this.fretData.getNote(stringIdx, fret);
-                this.configureCellForNote( row.insertCell(fret), scaleInfo, fret, currentNote, true);
+                if (rowIdx <= maxStringIdx){
+                    let currentNote = this.fretData.getNote(rowIdx, fret);
+                    this.configureCellForNote( row.insertCell(fret), scaleInfo, fret, currentNote, true);
+                } else {
+                    this.configureIdentifier(row.insertCell(fret), fret)
+                }
             }
         }
-
 
         eleTable.appendChild(buildCaption(scaleInfo));
         eleTable.appendChild(tBodyFrag);
     },
     
-    createVerticalFrets: function(eleTable, scaleInfo, fretData){
+    createVerticalFrets: function(eleTable, scaleInfo){
         
         removeAllChildren(eleTable);
 
@@ -78,9 +92,19 @@ const FRETBOARD = {
         for (let fret = 0; fret <= this.fretData.maxFrets; fret++){
             let row = eleTBody.insertRow(eleTBody.childElementCount);
             row.classList.add("frets");
-        
-            for (let stringIdx = 0; stringIdx < length(currentFret); stringIdx++){
-                this.configureCellForNote( row.insertCell(stringIdx), scaleInfo, fret, currentFret[stringIdx]);
+      
+            // total for notes plus info column
+            let colCount = length(currentFret) + 1;
+
+            for (let colIdx = 0; colIdx < colCount; colIdx++){
+                if (colIdx < length(currentFret)){
+                    let noteIdx = colIdx;
+                    this.configureCellForNote( row.insertCell(colIdx), scaleInfo, fret, currentFret[noteIdx]);
+                } else {
+                    let cell = row.insertCell(colIdx);
+                    cell.classList.add("document");
+                    this.configureIdentifier(cell, fret)
+                }
             }
 
             if (fret<=this.fretData.maxFrets){
@@ -91,6 +115,15 @@ const FRETBOARD = {
 
         eleTable.appendChild(eleCaption);
         eleTable.appendChild(tBodyFrag);
+    },
+
+    configureIdentifier: function(cell, fret){
+        if ([3,5,7,9,12,15].includes(fret)){
+            let eleNote = document.createElement("p");
+            eleNote.innerText = fret
+            cell.classList.add("note-cell");
+            cell.appendChild(eleNote);
+        }
     },
 
     configureCellForNote: function(cell, scaleInfo, fret, note, isHorizontal = false){

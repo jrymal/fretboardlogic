@@ -38,18 +38,26 @@ h2 {
     width: 2em;
 }
 
+.note-cell > p{
+    height: 1.2em;
+    line-height: normal;
+}
+
+.frets .note-cell > p{
+    width: 2em;
+    margin: 0;
+}
+
 .hnote{
     height: 1.2em;
 }
 .note{
     border-radius: 1em;
-    height: 1.2em;
-    line-height: normal;
 }
 
-.frets .note{
-    width: 2em;
-    margin: 0;
+.document > td,
+td.document {
+    border:0;
 }
 
 .highlighted-note{
