@@ -43,6 +43,17 @@ h2 {
     line-height: normal;
 }
 
+.document p{
+    width: 2em;
+    margin: 0;
+
+}
+.frets .document > p{
+    width: 1em;
+    margin: 0;
+    background: 
+}
+
 .frets .note-cell > p{
     width: 2em;
     margin: 0;
@@ -55,8 +66,26 @@ h2 {
     border-radius: 1em;
 }
 
-.document > td,
+.document {
+    border: 1px solid black;
+}
+
 td.document {
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+    border-top: 0;
+    border-bottom: 0;
+}
+
+td.document.fret0{
+    border-top: 1px solid black;
+}
+
+td.document.fret15{
+    border-bottom: 1px solid black;
+}
+
+.document > td{
     border:0;
 }
 
@@ -121,12 +150,12 @@ section details {
     margin: .5em 0;
 }
 
-.fret3,
-.fret5,
-.fret7,
-.fret9,
-.fret12,
-.fret15{
+.fret3.note-cell,
+.fret5.note-cell,
+.fret7.note-cell,
+.fret9.note-cell,
+.fret12.note-cell,
+.fret15.note-cell{
     background-color: var(--color-inlay-fret);
 }
 

@@ -51,24 +51,27 @@ const FRETBOARD = {
         let maxStringIdx = numOfStrings - 1;
 
         // number if strings plus the additional row(s) for identifying the fret markers
-        let width = numOfStrings + 1;
+        let width = numOfStrings + 2;
 
-        for (let rowIdx = width-1 ; rowIdx >=0 ; rowIdx--){
+        for (let rowIdx = 0 ; rowIdx < width ; rowIdx++){
 
-            let row = eleTBody.insertRow(maxStringIdx - rowIdx);
+            let row = eleTBody.insertRow(rowIdx);
             
-            if (rowIdx > maxStringIdx){
+            console.log(rowIdx);
+
+            if (rowIdx == width-1 || rowIdx == 0){
                 row.classList.add("document");
+            console.log("doc");
+                for (let fret = 0; fret <= this.fretData.maxFrets; fret++){
+                    this.configureIdentifier(row.insertCell(fret), fret)
+                }
             } else {
                 row.classList.add("frets");
-            }
-            
-            for (let fret = 0; fret <= this.fretData.maxFrets; fret++){
-                if (rowIdx <= maxStringIdx){
-                    let currentNote = this.fretData.getNote(rowIdx, fret);
+                let stringIdx = width - rowIdx - 2;
+            console.log("note "+stringIdx);
+                for (let fret = 0; fret <= this.fretData.maxFrets; fret++){
+                    let currentNote = this.fretData.getNote(stringIdx, fret);
                     this.configureCellForNote( row.insertCell(fret), scaleInfo, fret, currentNote, true);
-                } else {
-                    this.configureIdentifier(row.insertCell(fret), fret)
                 }
             }
         }
@@ -94,16 +97,16 @@ const FRETBOARD = {
             row.classList.add("frets");
       
             // total for notes plus info column
-            let colCount = length(currentFret) + 1;
+            let colCount = length(currentFret) + 2;
 
             for (let colIdx = 0; colIdx < colCount; colIdx++){
-                if (colIdx < length(currentFret)){
-                    let noteIdx = colIdx;
-                    this.configureCellForNote( row.insertCell(colIdx), scaleInfo, fret, currentFret[noteIdx]);
-                } else {
+                if (colIdx == 0 || colIdx > length(currentFret)){
                     let cell = row.insertCell(colIdx);
-                    cell.classList.add("document");
+                    cell.classList.add("document","fret"+fret);
                     this.configureIdentifier(cell, fret)
+                } else {
+                    let noteIdx = colIdx-1;
+                    this.configureCellForNote( row.insertCell(colIdx), scaleInfo, fret, currentFret[noteIdx]);
                 }
             }
 
@@ -121,7 +124,6 @@ const FRETBOARD = {
         if ([3,5,7,9,12,15].includes(fret)){
             let eleNote = document.createElement("p");
             eleNote.innerText = fret
-            cell.classList.add("note-cell");
             cell.appendChild(eleNote);
         }
     },
