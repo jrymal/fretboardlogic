@@ -138,7 +138,7 @@ caption{
     border-bottom: 0;
 }
 
-.chord .fret0 {
+.chord .fret0.note-cell {
     border-bottom: 3px solid black;
 }
 

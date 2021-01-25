@@ -121,7 +121,7 @@ const FRETBOARD = {
     },
 
     configureIdentifier: function(cell, fret){
-        if ([3,5,7,9,12,15].includes(fret)){
+        if ([0,3,5,7,9,12,15].includes(fret)){
             let eleNote = document.createElement("p");
             eleNote.innerText = fret
             cell.appendChild(eleNote);
