@@ -1,16 +1,54 @@
 "use strict";
 
 const INSTRUMENTS = {
-    "banjo5":["G:5", "D", "G", "B", "D"],
-    "bass4":["E", "A", "D", "G"],
-    "bass5":["B", "E", "A", "D", "G"],
-    "bass6":["B", "E", "A", "D", "G", "C"],
-    "guitar":["E", "A", "D", "G", "B", "E"],
-    "guitar7":["B", "E", "A", "D", "G", "B", "E"],
-    "guitar8T":["E","B", "E", "A", "D", "G", "B", "E"],
-    "mandolin":["G", "D", "A", "E"],
-    "ukuleleBar":["D", "G", "B", "E"],
-    "ukuleleSup":["G", "C", "E", "A"],
+    /*
+     * tuning - note when each string is played
+     * oct - the default octave to play notes from
+     */
+    "banjo5":{
+        "tuning":["G:5", "D", "G", "B", "D"],
+        "oct":4
+    },
+    "bass4":{
+        "tuning":["E", "A", "D", "G"],
+        "oct":2
+    },
+    "bass5":{
+        "tuning":["B", "E", "A", "D", "G"],
+        "oct":2
+    },
+    "bass6":{
+        "tuning":["B", "E", "A", "D", "G", "C"],
+        "oct":2
+    },
+    "guitar":{
+        "tuning":["E", "A", "D", "G", "B", "E"],
+        "oct":4
+    },
+    "guitar7":{
+        "tuning":["B", "E", "A", "D", "G", "B", "E"],
+        "oct":4
+    },
+    "guitar8T":{
+        "tuning":["E","B", "E", "A", "D", "G", "B", "E"],
+        "oct":4
+    },
+    "mandolin":{
+        "tuning":["G", "D", "A", "E"],
+        "oct":5
+    },
+    "ukuleleBar":{
+        "tuning":["D", "G", "B", "E"],
+        "oct":4
+    },
+    "ukuleleSup":{
+        "tuning":["G", "C", "E", "A"],
+        "oct":5
+    },
+    "piano":{
+        // piano has a different renderer so a tuning is not needed
+        "oct":4
+    }
 };
 
 const SCALES = {
@@ -298,7 +336,7 @@ const FRETBOARD_APP = {
         if (inst === "piano") {
             gen = Object.create(KEYBOARD_GENERATOR).init(key, mod, prettyName);
         } else {
-            let stringList = INSTRUMENTS[inst];
+            let stringList = INSTRUMENTS[inst].tuning;
             gen = Object.create(FRETBOARD_GENERATOR).init(stringList, key, mod, prettyName);
         }
 
@@ -365,9 +403,12 @@ function playNotes(event){
 }
 
 function buildUpDown(noteList){
-    const DEFAULT_OCT = 4;
+
+    let inst = getSelectedValue($("instrument"));
+    let defaultOct = INSTRUMENTS[inst].oct;
+    let currentOct = defaultOct;
+
     let scaleUp = [];
-    let currentOct = DEFAULT_OCT;
     let lastIdx = -1;
 
     noteList.forEach(
@@ -382,6 +423,6 @@ function buildUpDown(noteList){
     );
     let scaleDown = clone(scaleUp).reverse();
 
-    return scaleUp.concat(noteList[0]+":"+(DEFAULT_OCT+1), scaleDown);
+    return scaleUp.concat(noteList[0]+":"+(defaultOct+1), scaleDown);
 }
 
