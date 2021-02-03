@@ -50,25 +50,21 @@ const FRETBOARD = {
         let numOfStrings = length(this.stringList);
         let maxStringIdx = numOfStrings - 1;
 
-        // number if strings plus the additional row(s) for identifying the fret markers
+        // number of strings plus the additional row(s) for identifying the fret markers
         let width = numOfStrings + 2;
 
         for (let rowIdx = 0 ; rowIdx < width ; rowIdx++){
 
             let row = eleTBody.insertRow(rowIdx);
             
-            console.log(rowIdx);
-
             if (rowIdx == width-1 || rowIdx == 0){
                 row.classList.add("document");
-            console.log("doc");
                 for (let fret = 0; fret <= this.fretData.maxFrets; fret++){
                     this.configureIdentifier(row.insertCell(fret), fret)
                 }
             } else {
                 row.classList.add("frets");
                 let stringIdx = width - rowIdx - 2;
-            console.log("note "+stringIdx);
                 for (let fret = 0; fret <= this.fretData.maxFrets; fret++){
                     let currentNote = this.fretData.getNote(stringIdx, fret);
                     this.configureCellForNote( row.insertCell(fret), scaleInfo, fret, currentNote, true);

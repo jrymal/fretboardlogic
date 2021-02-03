@@ -176,20 +176,28 @@ const VCA = {
 const VOICE = {
     init: function(context){
     
+        // ocilator
         let vco = Object.create(VCO).init(context);
+        // volume off ocilator
         let vca = Object.create(VCA).init(context);
+        
+        // volume off ocilator
+        let masterVolume = context.createGain();
+        
+        // effects
         let envelope = Object.create(EnvelopeGenerator).init(context);
         let pitchControl = Object.create(RelativeRNG).init(context);
 
         vco.connect(vca);
         envelope.connect(vca.amplitude);
         pitchControl.connect(vco.frequency);
-        vca.connect(context.destination);
-        
+        vca.connect(masterVolume);
+        masterVolume.connect(context.destination);
 
         this.audioContext = context;
         this.vco = vco;
         this.vca = vca;
+        this.master = masterVolume;
         this.envelope = envelope;
         this.pitchControl = pitchControl;
         
@@ -209,10 +217,10 @@ const VOICE = {
     },
     stop: function(){
         this.vca.setVolume(0);
-    },   
+    },
+    // takes a value from 0-100
     setVolume: function(volume){
-        this.vca.setVolume(volume);
-        this.envelope.setVolume(volume);
+        this.master.gain.value=volume/100;
     }   
 };
 
