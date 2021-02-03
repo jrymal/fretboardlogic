@@ -27,10 +27,11 @@ h2 {
 
 .playable > p{
     display:inline-flex;
+    margin: 0;
 }
 .playable > button {
     display:inline-flex;
-    margin: 0 20px;
+    margin: .4em 0 .4em .7em;
 }
 
 .note-cell{
@@ -136,7 +137,7 @@ caption{
     border-radius: .5em .5em 0 0;
     border: 1px solid black;
     border-bottom: 0;
-}
+    padding: .5em;}
 
 .chord .fret0.note-cell {
     border-bottom: 3px solid black;
