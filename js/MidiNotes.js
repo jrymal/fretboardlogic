@@ -268,12 +268,12 @@ const MIDI_PLAYER = {
         
         let context =  new (window.AudioContext || window.webkitAudioContext);
         this.voice = Object.create(VOICE_LIST).init(context, voiceCount);
-        this.space = 200;
+        this.space = 300;
         this.volume = 100;
         return this;
     },
 
-    playNote:function(noteList, cnt, completedCallback) {
+    playNote:function(noteList, cnt, completedCallback, noteChangeCallback) {
 
         
         if (!Array.isArray(noteList)){
@@ -289,7 +289,7 @@ const MIDI_PLAYER = {
             );
         }
 
-        let player = Object.create(PLAY_LIST).init(this, fullNoteList, completedCallback);
+        let player = Object.create(PLAY_LIST).init(this, fullNoteList, completedCallback, noteChangeCallback);
     },
 
     setSpacing : function(space){
@@ -306,16 +306,28 @@ const MIDI_PLAYER = {
 };
 
 const PLAY_LIST = {
-    init: function(midiPlayer, fullNoteList, completedCallback){
+    init: function(midiPlayer, fullNoteList, completedCallback, noteChangeCallback){
         this.timerId = setInterval(this.playNoteList, midiPlayer.space, this, midiPlayer, fullNoteList);
         this.completedCallback = completedCallback;
+        this.noteChangeCallback = noteChangeCallback;
     },
     
     playNoteList : function(playList, midiPlayer, noteList) {
         let note = noteList.shift();
         midiPlayer.voice.setVolume(midiPlayer.volume);
         if (note){
-            midiPlayer.voice.playFreq(playList.noteFreq(note));
+            let split = note.split(':');
+            let reqNote = split[0];
+            let reqOct = BASELINE_OCT;
+
+            if (split.length > 1){
+                reqOct = split[1];
+            }
+
+            if (playList.noteChangeCallback){
+                playList.noteChangeCallback(reqNote);
+            }
+            midiPlayer.voice.playFreq(playList.noteFreq(reqNote, reqOct));
         } else {
             clearInterval(playList.timerId);
             if (playList.completedCallback){
@@ -324,26 +336,18 @@ const PLAY_LIST = {
         }
     },
 
-    noteFreq : function(note){
-        let dist = this.findDistanceOfNote(note);
+    noteFreq : function(note, oct){
+        let dist = this.findDistanceOfNote(note, oct);
         let freq = BASELINE_FREQ * Math.pow(2, dist/12);
         return freq;
     },
 
-    findDistanceOfNote : function(note){
-        let split = note.split(':');
-        let reqNote = split[0];
-        let reqOct = BASELINE_OCT;
-
-        if (split.length > 1){
-            reqOct = split[1];
-        }
-
+    findDistanceOfNote : function(reqNote, reqOct){
         // this unfortunately for this pass is dependent on MusicTheory.js
         let idxReqNote = NOTES.indexOf(reqNote);
 
         if (idxReqNote == -1){
-            console.log("Note not recognized:"+note);
+            console.log("Note not recognized:"+reqNote);
             return null;
         }
 

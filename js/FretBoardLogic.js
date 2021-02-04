@@ -395,11 +395,32 @@ function buildCaption(scaleInfo){
 function playNotes(event){
     let mp = app.getMidiPlayer();
     let button = event.target;
+    let eleCaption = button.parentNode;
+    let eleTable = eleCaption.parentNode;
     let scale = getDataAttribute(button, "scale");
+    let lastNoteClass = null;
     button.disabled = true;
     mp.playNote(buildUpDown(scale.split(',')), 1, function(){
+        if (lastNoteClass){
+            eleTable.classList.remove(lastNoteClass);
+        }
         button.disabled = false;
+    }, function(note){
+        // call back when the note playing changes
+        // remove old note if exists
+        if (lastNoteClass){
+            eleTable.classList.remove(lastNoteClass);
+        }
+        // add new note
+        if (note) {
+            lastNoteClass = "highlight-note-"+normalizeNote(note);
+            eleTable.classList.add(lastNoteClass);
+        }
     });
+}
+
+function normalizeNote(note){
+    return note.replace("#","sharp");
 }
 
 function buildUpDown(noteList){

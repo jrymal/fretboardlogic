@@ -143,6 +143,7 @@ const FRETBOARD = {
         if (ni){
             classesToAdd.push("highlighted-note");
             classesToAdd.push(ni.getDegreeAsString());
+            classesToAdd.push(normalizeNote(note));
             eleNote.innerText=getDisplayNote(note);
         }
         

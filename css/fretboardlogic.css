@@ -90,6 +90,21 @@ td.document.fret15{
     border:0;
 }
 
+.highlight-note-A p.A,
+.highlight-note-Asharp p.Asharp,
+.highlight-note-B p.B,
+.highlight-note-C p.C,
+.highlight-note-Csharp p.Csharp,
+.highlight-note-D p.D,
+.highlight-note-Dsharp p.Dsharp,
+.highlight-note-E p.E,
+.highlight-note-F p.F,
+.highlight-note-Fsharp p.Fsharp,
+.highlight-note-G p.G,
+.highlight-note-Gsharp p.Gsharp{
+    background: white;
+}
+
 .highlighted-note{
     border: 1px solid black;
 }
