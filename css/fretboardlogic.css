@@ -65,6 +65,7 @@ h2 {
 }
 .note{
     border-radius: 1em;
+    transition: background .05s;
 }
 
 .document {
