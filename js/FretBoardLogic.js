@@ -1,5 +1,6 @@
 "use strict";
 
+
 const INSTRUMENTS = {
     /*
      * tuning - note when each string is played
@@ -373,11 +374,15 @@ const app = Object.create(FRETBOARD_APP).setInstallPromptHandler();
 
 function init(){
     app.init();
+
 }
 
-function buildCaption(scaleInfo){
+function buildCaption(scaleInfo, staffId){
     let eleCaption = document.createElement("caption");
     eleCaption.className += "playable";
+
+    let staff = document.createElement("div");
+    staff.id=staffId;
 
     let title = document.createElement("p");
     let button = document.createElement("button");
@@ -389,6 +394,8 @@ function buildCaption(scaleInfo){
 
     eleCaption.appendChild(title);
     eleCaption.appendChild(button);
+    eleCaption.appendChild(staff);
+
     return eleCaption;
 }
 

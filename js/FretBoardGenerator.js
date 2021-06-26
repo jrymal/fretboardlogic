@@ -72,15 +72,33 @@ const FRETBOARD = {
             }
         }
 
-        eleTable.appendChild(buildCaption(scaleInfo));
+        var scaleId = eleTable.id+"-staff";
+
+        eleTable.appendChild(buildCaption(scaleInfo, scaleId));
         eleTable.appendChild(tBodyFrag);
+
+        var vf = new Vex.Flow.Factory({renderer: {elementId: scaleId}});
+        var score = vf.EasyScore();
+        var system = vf.System();
+
+        system.addStave({
+          voices: [
+            score.voice(score.notes('C#5/q, B4, A4, G#4', {stem: 'up'}))
+          ]
+        })
+            .addClef('treble')
+            .addTimeSignature('4/4');
+
+        vf.draw();
     },
     
     createVerticalFrets: function(eleTable, scaleInfo){
         
         removeAllChildren(eleTable);
 
-        let eleCaption = buildCaption(scaleInfo);
+        var scaleId = eleTable.id+"-staff";
+        
+        let eleCaption = buildCaption(scaleInfo, scaleId);
         let tBodyFrag = document.createDocumentFragment();
         let eleTBody = document.createElement("tbody");
         tBodyFrag.appendChild(eleTBody);
